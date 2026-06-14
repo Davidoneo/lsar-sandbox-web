@@ -1,0 +1,416 @@
+XH VELO1VELOCITY BIKES CORP      100 MAIN STREET          SAN FRANCISCO       CAUSA                 94101     
+XH SHFTXSHIFT DYNAMICS LLC       200 DRIVETRAIN BLVD      CHICAGO             ILUSA                 60601     
+XH SPNKTSPINTRONICS WHEELS       300 ROTATION WEG         ZURICH              ZHSWITZERLAND         8000      
+XH BRKCOBRAKEMASTERS INC         400 STOPPING LANE        OSAKA               OSJAPAN               530       
+XH SHOCKSHOCKWAVE SUSPENSION     500 DAMPING WAY          DENVER              COUSA                 80202     
+XH LUMNXLUMINA LIGHTING TECH     600 PHOTON ROAD          BERLIN              BEGERMANY             10115     
+XH TIRCOTOUGHTIRE RUBBER CO      700 TREAD PARK           TAIPEI              TPTAIWAN              100       
+XH CHNNXCHAINLINK METALS         800 LINKAGE AVE          TAICHUNG            TCTAIWAN              200       
+XH PEDLXPEDAL POWER INC          900 CADENCE DR           AUSTIN              TXUSA                 78701     
+XH SADLXSADDLECOMFORT INC        1000 SEAT PLAZA          MILAN               MIITALY               20100     
+XH TOOLZMASTERTOOLS MFG          1100 WRENCH ST           DETROIT             MIUSA                 48201     
+XH BATRYVOLTCELL ENERGY          1200 IONIC GMBH          STUTTGART           BWGERMANY             70173     
+XA MBIKEE    221                                                                                                          
+AA MBIKEE    00                00PA02.00                                                                                      
+GA MECH-02F0050.0001000.00
+XB MBIKEE    00                00PA2026 E-BIKE PLATFOR                                
+XB MBIKEE    01                00PBFRAME ASSY                       00                
+XB MBIKEE    0101              00PCCARBON FRONT TRIANG              01                
+XB MBIKEE    0102              00PCCARBON REAR SWINGAR              01                
+XB MBIKEE    02                00PBSUSPENSION SYSTEM                00                
+XB MBIKEE    0201              00PC140MM FRONT FORK                 02                
+XB MBIKEE    0202              00PC190X45 AIR SHOCK                 02                
+XB MBIKEE    03                00PBDRIVETRAIN SYSTEM                00                
+XB MBIKEE    0301              00PCTHREADED BB                      03                
+XB MBIKEE    0302              00PC165MM CRANKSET                   03                
+XB MBIKEE    0303              00PC118 LINK 12S CHAIN               03                
+XB MBIKEE    0304              00PC12S REAR DERAILLEUR              03                
+XB MBIKEE    0305              00PC10-50T 12S CASSETTE              03                
+XB MBIKEE    0306              00PC12S SHIFTER                      03                
+XB MBIKEE    0307              00PCALLOY FLAT PEDALS                03                
+XB MBIKEE    04                00PBBRAKE SYSTEM                     00                
+XB MBIKEE    0401              00PCFRONT BRAKE ASSY                 04                
+XB MBIKEE    04011             00PDFRONT HYDRAULIC LVR              0401              
+XB MBIKEE    04012             00PD4-PISTON CALIPER F               0401              
+XB MBIKEE    04013             00PD200MM FRONT ROTOR                0401              
+XB MBIKEE    04014             00PDMETALLIC BRAKE PADS              0401              
+XB MBIKEE    0402              00PCREAR BRAKE ASSY                  04                
+XB MBIKEE    04021             00PDREAR HYDRAULIC LVR               0402              
+XB MBIKEE    04022             00PD4-PISTON CALIPER R               0402              
+XB MBIKEE    04023             00PD180MM REAR ROTOR                 0402              
+XB MBIKEE    04024             00PDMETALLIC BRAKE PADS              0402              
+XB MBIKEE    05                00PBWHEEL SYSTEM                     00                
+XB MBIKEE    0501              00PC29IN FRONT WHEEL                 05                
+XB MBIKEE    05011             00PD15X110 FRONT HUB                 0501              
+XB MBIKEE    05012             00PDBUTTED SPOKES 290MM              0501              
+XB MBIKEE    05013             00PD30MM ALLOY RIM                   0501              
+XB MBIKEE    05014             00PD29X2.5 ENDURO TIRE               0501              
+XB MBIKEE    0502              00PC29IN REAR WHEEL                  05                
+XB MBIKEE    05021             00PD12X148 REAR HUB                  0502              
+XB MBIKEE    05022             00PDBUTTED SPOKES 292MM              0502              
+XB MBIKEE    05023             00PD30MM ALLOY RIM                   0502              
+XB MBIKEE    05024             00PD29X2.4 ENDURO TIRE               0502              
+XB MBIKEE    06                00PBSTEERING ASSY                    00                
+XB MBIKEE    0601              00PCIS42/IS52 HEADSET                06                
+XB MBIKEE    0602              00PC40MM 35CLAMP STEM                06                
+XB MBIKEE    0603              00PC780MM CARBON BAR                 06                
+XB MBIKEE    0604              00PCLOCK-ON RUBBER GRIP              06                
+XB MBIKEE    07                00PBSEATING ASSY                     00                
+XB MBIKEE    0701              00PC150MM DROPPER POST               07                
+XB MBIKEE    0702              00PCERGONOMIC MTB SADDL              07                
+XB MBIKEE    08                00PBE-DRIVE SYSTEM                   00                
+XB MBIKEE    0801              00PC85NM MID-DRIVE MOT               08                
+XB MBIKEE    0802              00PC750WH INT BATTERY                08                
+XB MBIKEE    0803              00PCLED HANDLEBAR DISP               08                
+XB MBIKEE    0804              00PCREAR WHEEL SPD SEN               08                
+HA VELO1VELO-MBK-2026                   2026 E-BIKE PLATFOR                                                                                                                                                                                                                                                                                                                                                                                                                   
+HG VELO1VELO-MBK-2026                   MBIKEE    00                00P000010001                                                                                                                                                                        
+HA VELO1VELO-FRM-001                    CARBON MAIN FRAME                                                                                                                                                                                                                                                                                                                                                                                                                     
+HG VELO1VELO-FRM-001                    MBIKEE    01                00P000020001                                                                                                                                                                        
+HA VELO1VELO-FRM-F01                    CARBON FRONT TRIANG                                                                                                                                                                                                                                                                                                                                                                                                                   
+HG VELO1VELO-FRM-F01                    MBIKEE    0101              00P000030001                                                                                                                                                                        
+HA VELO1VELO-FRM-R01                    CARBON REAR SWINGAR                                                                                                                                                                                                                                                                                                                                                                                                                   
+HG VELO1VELO-FRM-R01                    MBIKEE    0102              00P000040001                                                                                                                                                                        
+HA SHOCKSHK-SYS-000                     SUSPENSION SYSTEM                                                                                                                                                                                                                                                                                                                                                                                                                     
+HG SHOCKSHK-SYS-000                     MBIKEE    02                00P000050001                                                                                                                                                                        
+HA SHOCKSHK-FRT-140                     140MM FRONT FORK                                                                                                                                                                                                                                                                                                                                                                                                                      
+HG SHOCKSHK-FRT-140                     MBIKEE    0201              00P000060001                                                                                                                                                                        
+HA SHOCKSHK-REA-190                     190X45 AIR SHOCK                                                                                                                                                                                                                                                                                                                                                                                                                      
+HG SHOCKSHK-REA-190                     MBIKEE    0202              00P000070001                                                                                                                                                                        
+HA SHFTXSHF-SYS-000                     DRIVETRAIN SYSTEM                                                                                                                                                                                                                                                                                                                                                                                                                     
+HG SHFTXSHF-SYS-000                     MBIKEE    03                00P000080001                                                                                                                                                                        
+HA SHFTXSHF-BB-BSA                      THREADED BB                                                                                                                                                                                                                                                                                                                                                                                                                           
+HG SHFTXSHF-BB-BSA                      MBIKEE    0301              00P000090001                                                                                                                                                                        
+HA SHFTXSHF-CRK-165                     165MM CRANKSET                                                                                                                                                                                                                                                                                                                                                                                                                        
+HG SHFTXSHF-CRK-165                     MBIKEE    0302              00P000100001                                                                                                                                                                        
+HA CHNNXCHN-12S-118                     118 LINK 12S CHAIN                                                                                                                                                                                                                                                                                                                                                                                                                    
+HG CHNNXCHN-12S-118                     MBIKEE    0303              00P000110001                                                                                                                                                                        
+HA SHFTXSHF-RD-12S                      12S REAR DERAILLEUR                                                                                                                                                                                                                                                                                                                                                                                                                   
+HG SHFTXSHF-RD-12S                      MBIKEE    0304              00P000120001                                                                                                                                                                        
+HA SHFTXSHF-CS-1050                     10-50T 12S CASSETTE                                                                                                                                                                                                                                                                                                                                                                                                                   
+HG SHFTXSHF-CS-1050                     MBIKEE    0305              00P000130001                                                                                                                                                                        
+HA SHFTXSHF-SL-12S                      12S SHIFTER                                                                                                                                                                                                                                                                                                                                                                                                                           
+HG SHFTXSHF-SL-12S                      MBIKEE    0306              00P000140001                                                                                                                                                                        
+HA PEDLXPDL-MTB-ALU                     ALLOY FLAT PEDALS                                                                                                                                                                                                                                                                                                                                                                                                                     
+HG PEDLXPDL-MTB-ALU                     MBIKEE    0307              00P000150002                                                                                                                                                                        
+HA BRKCOBRK-SYS-000                     HYDRAULIC BRAKE SYS                                                                                                                                                                                                                                                                                                                                                                                                                   
+HG BRKCOBRK-SYS-000                     MBIKEE    04                00P000160001                                                                                                                                                                        
+HA BRKCOBRK-FRT-AS                      FRONT BRAKE ASSY                                                                                                                                                                                                                                                                                                                                                                                                                      
+HG BRKCOBRK-FRT-AS                      MBIKEE    0401              00P000170001                                                                                                                                                                        
+HA BRKCOBRK-LVR-F                       FRONT HYDRAULIC LVR                                                                                                                                                                                                                                                                                                                                                                                                                   
+HG BRKCOBRK-LVR-F                       MBIKEE    04011             00P000180001                                                                                                                                                                        
+HA BRKCOBRK-CAL-F4                      4-PISTON CALIPER F                                                                                                                                                                                                                                                                                                                                                                                                                    
+HG BRKCOBRK-CAL-F4                      MBIKEE    04012             00P000190001                                                                                                                                                                        
+HA BRKCOBRK-RTR-200                     200MM FRONT ROTOR                                                                                                                                                                                                                                                                                                                                                                                                                     
+HG BRKCOBRK-RTR-200                     MBIKEE    04013             00P000200001                                                                                                                                                                        
+HA BRKCOBRK-PAD-MNT                     METALLIC BRAKE PADS                                                                                                                                                                                                                                                                                                                                                                                                                   
+HG BRKCOBRK-PAD-MNT                     MBIKEE    04014             00P000210001                                                                                                                                                                        
+HA BRKCOBRK-REA-AS                      REAR BRAKE ASSY                                                                                                                                                                                                                                                                                                                                                                                                                       
+HG BRKCOBRK-REA-AS                      MBIKEE    0402              00P000220001                                                                                                                                                                        
+HA BRKCOBRK-LVR-R                       REAR HYDRAULIC LVR                                                                                                                                                                                                                                                                                                                                                                                                                    
+HG BRKCOBRK-LVR-R                       MBIKEE    04021             00P000230001                                                                                                                                                                        
+HA BRKCOBRK-CAL-R4                      4-PISTON CALIPER R                                                                                                                                                                                                                                                                                                                                                                                                                    
+HG BRKCOBRK-CAL-R4                      MBIKEE    04022             00P000240001                                                                                                                                                                        
+HA BRKCOBRK-RTR-180                     180MM REAR ROTOR                                                                                                                                                                                                                                                                                                                                                                                                                      
+HG BRKCOBRK-RTR-180                     MBIKEE    04023             00P000250001                                                                                                                                                                        
+HA BRKCOBRK-PAD-MNT2                    METALLIC BRAKE PADS                                                                                                                                                                                                                                                                                                                                                                                                                   
+HG BRKCOBRK-PAD-MNT2                    MBIKEE    04024             00P000260001                                                                                                                                                                        
+HA SPNKTSPN-SYS-000                     WHEELSET SYSTEM                                                                                                                                                                                                                                                                                                                                                                                                                       
+HG SPNKTSPN-SYS-000                     MBIKEE    05                00P000270001                                                                                                                                                                        
+HA SPNKTSPN-WHL-F29                     29IN FRONT WHEEL                                                                                                                                                                                                                                                                                                                                                                                                                      
+HG SPNKTSPN-WHL-F29                     MBIKEE    0501              00P000280001                                                                                                                                                                        
+HA SPNKTSPN-HUB-F15                     15X110 FRONT HUB                                                                                                                                                                                                                                                                                                                                                                                                                      
+HG SPNKTSPN-HUB-F15                     MBIKEE    05011             00P000290001                                                                                                                                                                        
+HA SPNKTSPN-SPK-290                     BUTTED SPOKES 290MM                                                                                                                                                                                                                                                                                                                                                                                                                   
+HG SPNKTSPN-SPK-290                     MBIKEE    05012             00P000300032                                                                                                                                                                        
+HA SPNKTSPN-RIM-F30                     30MM ALLOY RIM                                                                                                                                                                                                                                                                                                                                                                                                                        
+HG SPNKTSPN-RIM-F30                     MBIKEE    05013             00P000310001                                                                                                                                                                        
+HA TIRCOTIR-END-29F                     29X2.5 ENDURO TIRE                                                                                                                                                                                                                                                                                                                                                                                                                    
+HG TIRCOTIR-END-29F                     MBIKEE    05014             00P000320001                                                                                                                                                                        
+HA SPNKTSPN-WHL-R29                     29IN REAR WHEEL                                                                                                                                                                                                                                                                                                                                                                                                                       
+HG SPNKTSPN-WHL-R29                     MBIKEE    0502              00P000330001                                                                                                                                                                        
+HA SPNKTSPN-HUB-R12                     12X148 REAR HUB                                                                                                                                                                                                                                                                                                                                                                                                                       
+HG SPNKTSPN-HUB-R12                     MBIKEE    05021             00P000340001                                                                                                                                                                        
+HA SPNKTSPN-SPK-292                     BUTTED SPOKES 292MM                                                                                                                                                                                                                                                                                                                                                                                                                   
+HG SPNKTSPN-SPK-292                     MBIKEE    05022             00P000350032                                                                                                                                                                        
+HA SPNKTSPN-RIM-R30                     30MM ALLOY RIM                                                                                                                                                                                                                                                                                                                                                                                                                        
+HG SPNKTSPN-RIM-R30                     MBIKEE    05023             00P000360001                                                                                                                                                                        
+HA TIRCOTIR-END-29R                     29X2.4 ENDURO TIRE                                                                                                                                                                                                                                                                                                                                                                                                                    
+HG TIRCOTIR-END-29R                     MBIKEE    05024             00P000370001                                                                                                                                                                        
+HA VELO1VELO-STR-000                    STEERING ASSEMBLY                                                                                                                                                                                                                                                                                                                                                                                                                     
+HG VELO1VELO-STR-000                    MBIKEE    06                00P000380001                                                                                                                                                                        
+HA VELO1VELO-HDS-IS                     IS42/IS52 HEADSET                                                                                                                                                                                                                                                                                                                                                                                                                     
+HG VELO1VELO-HDS-IS                     MBIKEE    0601              00P000390001                                                                                                                                                                        
+HA VELO1VELO-STM-40                     40MM 35CLAMP STEM                                                                                                                                                                                                                                                                                                                                                                                                                     
+HG VELO1VELO-STM-40                     MBIKEE    0602              00P000400001                                                                                                                                                                        
+HA VELO1VELO-BAR-780                    780MM CARBON BAR                                                                                                                                                                                                                                                                                                                                                                                                                      
+HG VELO1VELO-BAR-780                    MBIKEE    0603              00P000410001                                                                                                                                                                        
+HA VELO1VELO-GRP-LOK                    LOCK-ON RUBBER GRIP                                                                                                                                                                                                                                                                                                                                                                                                                   
+HG VELO1VELO-GRP-LOK                    MBIKEE    0604              00P000420002                                                                                                                                                                        
+HA SADLXSAD-SYS-000                     SEATING ASSEMBLY                                                                                                                                                                                                                                                                                                                                                                                                                      
+HG SADLXSAD-SYS-000                     MBIKEE    07                00P000430001                                                                                                                                                                        
+HA SADLXSAD-DRP-150                     150MM DROPPER POST                                                                                                                                                                                                                                                                                                                                                                                                                    
+HG SADLXSAD-DRP-150                     MBIKEE    0701              00P000440001                                                                                                                                                                        
+HA SADLXSAD-SDL-MTB                     ERGONOMIC MTB SADDL                                                                                                                                                                                                                                                                                                                                                                                                                   
+HG SADLXSAD-SDL-MTB                     MBIKEE    0702              00P000450001                                                                                                                                                                        
+HA BATRYBTY-SYS-000                     ELECTRONIC DRIVE SY                                                                                                                                                                                                                                                                                                                                                                                                                   
+HG BATRYBTY-SYS-000                     MBIKEE    08                00P000460001                                                                                                                                                                        
+HA BATRYBTY-MOT-85                      85NM MID-DRIVE MOT                                                                                                                                                                                                                                                                                                                                                                                                                    
+HG BATRYBTY-MOT-85                      MBIKEE    0801              00P000470001                                                                                                                                                                        
+HA BATRYBTY-PAC-750                     750WH INT BATTERY                                                                                                                                                                                                                                                                                                                                                                                                                     
+HG BATRYBTY-PAC-750                     MBIKEE    0802              00P000480001                                                                                                                                                                        
+HA BATRYBTY-DIS-LED                     LED HANDLEBAR DISP                                                                                                                                                                                                                                                                                                                                                                                                                    
+HG BATRYBTY-DIS-LED                     MBIKEE    0803              00P000490001                                                                                                                                                                        
+HA BATRYBTY-SEN-SPD                     REAR WHEEL SPD SEN                                                                                                                                                                                                                                                                                                                                                                                                                    
+HG BATRYBTY-SEN-SPD                     MBIKEE    0804              00P000500001                                                                                                                                                                        
+HA TOOLZTL-HEX-SET                      METRIC HEX WRENCH S                                                                                                                                                                                                                                                                                                                                                                                                                   
+EA TOOLZTL-HEX-SET                      METRIC HEX WRENCH SET 1.5-10MM            TE                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+HA TOOLZTL-TRQ-15                       TORQUE WRENCH 2-15N                                                                                                                                                                                                                                                                                                                                                                                                                   
+EA TOOLZTL-TRQ-15                       TORQUE WRENCH 2-15NM                      TE                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+HA TOOLZTL-TRQ-50                       TORQUE WRENCH 10-50                                                                                                                                                                                                                                                                                                                                                                                                                   
+EA TOOLZTL-TRQ-50                       TORQUE WRENCH 10-50NM                     TE                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+HA TOOLZTL-CHR-BRK                      CHAIN BREAKER TOOL                                                                                                                                                                                                                                                                                                                                                                                                                    
+EA TOOLZTL-CHR-BRK                      CHAIN BREAKER TOOL PROFESSIONAL           TE                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+HA TOOLZTL-PLR-LNK                      MASTER LINK PLIERS                                                                                                                                                                                                                                                                                                                                                                                                                    
+EA TOOLZTL-PLR-LNK                      MASTER LINK PLIERS                        TE                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+HA TOOLZTL-CST-RMV                      CASSETTE REMOVAL TO                                                                                                                                                                                                                                                                                                                                                                                                                   
+EA TOOLZTL-CST-RMV                      CASSETTE REMOVAL TOOL WITH PIN            TE                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+HA TOOLZTL-WHP-CHN                      CHAIN WHIP SPROCKET                                                                                                                                                                                                                                                                                                                                                                                                                   
+EA TOOLZTL-WHP-CHN                      CHAIN WHIP SPROCKET HOLDER                TE                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+HA BRKCOBK-BLD-PRO                      PROFESSIONAL DISK B                                                                                                                                                                                                                                                                                                                                                                                                                   
+EA BRKCOBK-BLD-PRO                      PROFESSIONAL DISK BRAKE BLEED KIT         TE                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+HA TOOLZTL-SPK-WRN                      PRECISION SPOKE WRE                                                                                                                                                                                                                                                                                                                                                                                                                   
+EA TOOLZTL-SPK-WRN                      PRECISION SPOKE WRENCH 3.23MM             TE                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+HA TOOLZTL-PMP-FLR                      HIGH PRESSURE FLOOR                                                                                                                                                                                                                                                                                                                                                                                                                   
+EA TOOLZTL-PMP-FLR                      HIGH PRESSURE FLOOR PUMP                  TE                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+HA TOOLZTL-LVR-TR                       POLYMER TIRE LEVER                                                                                                                                                                                                                                                                                                                                                                                                                    
+EA TOOLZTL-LVR-TR                       POLYMER TIRE LEVER SET                    TE                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+HA BATRYBT-DGN-GUI                      E-DRIVE PC DIAGNOST                                                                                                                                                                                                                                                                                                                                                                                                                   
+EA BATRYBT-DGN-GUI                      E-DRIVE PC DIAGNOSTIC INTERFACE           TE                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+HA BATRYBT-CBL-USB                      DIAGNOSTIC USB-C DA                                                                                                                                                                                                                                                                                                                                                                                                                   
+EA BATRYBT-CBL-USB                      DIAGNOSTIC USB-C DATA CABLE               TE                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+HA TOOLZTL-GRS-GUN                      PRECISION GREASE IN                                                                                                                                                                                                                                                                                                                                                                                                                   
+EA TOOLZTL-GRS-GUN                      PRECISION GREASE INJECTOR GUN             TE                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+HA LUMNXLM-TL-TST                       LIGHTING CIRCUIT TE                                                                                                                                                                                                                                                                                                                                                                                                                   
+EA LUMNXLM-TL-TST                       LIGHTING CIRCUIT TESTER                   TE                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+BA MBIKEE    0303              00P                                                                               
+BF MBIKEE    0303              00P00010000001000HA0.85                                    
+BA MBIKEE    0304              00P                                                                               
+BF MBIKEE    0304              00P00010000001000HA0.85                                    
+BA MBIKEE    0305              00P                                                                               
+BF MBIKEE    0305              00P00010000001000HA0.85                                    
+BA MBIKEE    0306              00P                                                                               
+BF MBIKEE    0306              00P00010000001000HA0.85                                    
+BA MBIKEE    0307              00P                                                                               
+BF MBIKEE    0307              00P00010000001000HA0.85                                    
+BA MBIKEE    04                00P                                                                               
+BF MBIKEE    04                00P00010000001000HA0.85                                    
+BA MBIKEE    0401              00P                                                                               
+BF MBIKEE    0401              00P00010000001000HA0.85                                    
+BA MBIKEE    04011             00P                                                                               
+BF MBIKEE    04011             00P00010000001000HA0.85                                    
+BA MBIKEE    04012             00P                                                                               
+BF MBIKEE    04012             00P00010000001000HA0.85                                    
+BA MBIKEE    04013             00P                                                                               
+BF MBIKEE    04013             00P00010000001000HA0.85                                    
+BA MBIKEE    04014             00P                                                                               
+BF MBIKEE    04014             00P00010000001000HA0.85                                    
+BA MBIKEE    0402              00P                                                                               
+BF MBIKEE    0402              00P00010000001000HA0.85                                    
+BA MBIKEE    04021             00P                                                                               
+BF MBIKEE    04021             00P00010000001000HA0.85                                    
+BA MBIKEE    04022             00P                                                                               
+BF MBIKEE    04022             00P00010000001000HA0.85                                    
+BA MBIKEE    04023             00P                                                                               
+BF MBIKEE    04023             00P00010000001000HA0.85                                    
+CA MBIKEE    05014             00PKCAAAAA                                                            REPLACE FRONT TIRE                  0030.00                                            
+CB MBIKEE    05014             00PKCAAAAA001PREPARE BICYCLE FOR SERVICE                                                           
+CD MBIKEE    05014             00PKCAAAAA001001MECH-02            
+CB MBIKEE    05014             00PKCAAAAA002REMOVE DEFECTIVE COMPONENT                                                            
+CD MBIKEE    05014             00PKCAAAAA002001MECH-02            
+CB MBIKEE    05014             00PKCAAAAA003INSPECT FOR COLLATERAL DAMAGE                                                         
+CD MBIKEE    05014             00PKCAAAAA003001MECH-02            
+CB MBIKEE    05014             00PKCAAAAA004INSTALL NEW COMPONENT                                                                 
+CD MBIKEE    05014             00PKCAAAAA004001MECH-02            
+CB MBIKEE    05014             00PKCAAAAA005VERIFY PROPER OPERATION                                                               
+CD MBIKEE    05014             00PKCAAAAA005001MECH-02            
+CA MBIKEE    05024             00PKCAAAAB                                                            REPLACE REAR TIRE                   0030.00                                            
+CB MBIKEE    05024             00PKCAAAAB001PREPARE BICYCLE FOR SERVICE                                                           
+CD MBIKEE    05024             00PKCAAAAB001001MECH-02            
+CB MBIKEE    05024             00PKCAAAAB002REMOVE DEFECTIVE COMPONENT                                                            
+CD MBIKEE    05024             00PKCAAAAB002001MECH-02            
+CB MBIKEE    05024             00PKCAAAAB003INSPECT FOR COLLATERAL DAMAGE                                                         
+CD MBIKEE    05024             00PKCAAAAB003001MECH-02            
+CB MBIKEE    05024             00PKCAAAAB004INSTALL NEW COMPONENT                                                                 
+CD MBIKEE    05024             00PKCAAAAB004001MECH-02            
+CB MBIKEE    05024             00PKCAAAAB005VERIFY PROPER OPERATION                                                               
+CD MBIKEE    05024             00PKCAAAAB005001MECH-02            
+CA MBIKEE    0303              00PKCAAAAC                                                            REPLACE BICYCLE CHAIN               0030.00                                            
+CB MBIKEE    0303              00PKCAAAAC001PREPARE BICYCLE FOR SERVICE                                                           
+CD MBIKEE    0303              00PKCAAAAC001001MECH-02            
+CB MBIKEE    0303              00PKCAAAAC002REMOVE DEFECTIVE COMPONENT                                                            
+CD MBIKEE    0303              00PKCAAAAC002001MECH-02            
+CB MBIKEE    0303              00PKCAAAAC003INSPECT FOR COLLATERAL DAMAGE                                                         
+CD MBIKEE    0303              00PKCAAAAC003001MECH-02            
+CB MBIKEE    0303              00PKCAAAAC004INSTALL NEW COMPONENT                                                                 
+CD MBIKEE    0303              00PKCAAAAC004001MECH-02            
+CB MBIKEE    0303              00PKCAAAAC005VERIFY PROPER OPERATION                                                               
+CD MBIKEE    0303              00PKCAAAAC005001MECH-02            
+CA MBIKEE    0401              00PSCAAAAA                                                            BLEED FRONT BRAKE                   0030.00                                            
+CB MBIKEE    0401              00PSCAAAAA001PREPARE BICYCLE FOR SERVICE                                                           
+CD MBIKEE    0401              00PSCAAAAA001001MECH-02            
+CB MBIKEE    0401              00PSCAAAAA002REMOVE DEFECTIVE COMPONENT                                                            
+CD MBIKEE    0401              00PSCAAAAA002001MECH-02            
+CB MBIKEE    0401              00PSCAAAAA003INSPECT FOR COLLATERAL DAMAGE                                                         
+CD MBIKEE    0401              00PSCAAAAA003001MECH-02            
+CB MBIKEE    0401              00PSCAAAAA004INSTALL NEW COMPONENT                                                                 
+CD MBIKEE    0401              00PSCAAAAA004001MECH-02            
+CB MBIKEE    0401              00PSCAAAAA005VERIFY PROPER OPERATION                                                               
+CD MBIKEE    0401              00PSCAAAAA005001MECH-02            
+CA MBIKEE    0402              00PSCAAABB                                                            BLEED REAR BRAKE                    0030.00                                            
+CB MBIKEE    0402              00PSCAAABB001PREPARE BICYCLE FOR SERVICE                                                           
+CD MBIKEE    0402              00PSCAAABB001001MECH-02            
+CB MBIKEE    0402              00PSCAAABB002REMOVE DEFECTIVE COMPONENT                                                            
+CD MBIKEE    0402              00PSCAAABB002001MECH-02            
+CB MBIKEE    0402              00PSCAAABB003INSPECT FOR COLLATERAL DAMAGE                                                         
+CD MBIKEE    0402              00PSCAAABB003001MECH-02            
+CB MBIKEE    0402              00PSCAAABB004INSTALL NEW COMPONENT                                                                 
+CD MBIKEE    0402              00PSCAAABB004001MECH-02            
+CB MBIKEE    0402              00PSCAAABB005VERIFY PROPER OPERATION                                                               
+CD MBIKEE    0402              00PSCAAABB005001MECH-02            
+CA MBIKEE    04014             00PKCAAAAD                                                            REPLACE FRONT BRAKE PADS            0030.00                                            
+CB MBIKEE    04014             00PKCAAAAD001PREPARE BICYCLE FOR SERVICE                                                           
+CD MBIKEE    04014             00PKCAAAAD001001MECH-02            
+CB MBIKEE    04014             00PKCAAAAD002REMOVE DEFECTIVE COMPONENT                                                            
+CD MBIKEE    04014             00PKCAAAAD002001MECH-02            
+CB MBIKEE    04014             00PKCAAAAD003INSPECT FOR COLLATERAL DAMAGE                                                         
+CD MBIKEE    04014             00PKCAAAAD003001MECH-02            
+CB MBIKEE    04014             00PKCAAAAD004INSTALL NEW COMPONENT                                                                 
+CD MBIKEE    04014             00PKCAAAAD004001MECH-02            
+CB MBIKEE    04014             00PKCAAAAD005VERIFY PROPER OPERATION                                                               
+CD MBIKEE    04014             00PKCAAAAD005001MECH-02            
+CA MBIKEE    04024             00PKCAAAAE                                                            REPLACE REAR BRAKE PADS             0030.00                                            
+CB MBIKEE    04024             00PKCAAAAE001PREPARE BICYCLE FOR SERVICE                                                           
+CD MBIKEE    04024             00PKCAAAAE001001MECH-02            
+CB MBIKEE    04024             00PKCAAAAE002REMOVE DEFECTIVE COMPONENT                                                            
+CD MBIKEE    04024             00PKCAAAAE002001MECH-02            
+CB MBIKEE    04024             00PKCAAAAE003INSPECT FOR COLLATERAL DAMAGE                                                         
+CD MBIKEE    04024             00PKCAAAAE003001MECH-02            
+CB MBIKEE    04024             00PKCAAAAE004INSTALL NEW COMPONENT                                                                 
+CD MBIKEE    04024             00PKCAAAAE004001MECH-02            
+CB MBIKEE    04024             00PKCAAAAE005VERIFY PROPER OPERATION                                                               
+CD MBIKEE    04024             00PKCAAAAE005001MECH-02            
+CA MBIKEE    0802              00PKCAAAAF                                                            REPLACE BATTERY PACK                0030.00                                            
+CB MBIKEE    0802              00PKCAAAAF001PREPARE BICYCLE FOR SERVICE                                                           
+CD MBIKEE    0802              00PKCAAAAF001001MECH-02            
+CB MBIKEE    0802              00PKCAAAAF002REMOVE DEFECTIVE COMPONENT                                                            
+CD MBIKEE    0802              00PKCAAAAF002001MECH-02            
+CB MBIKEE    0802              00PKCAAAAF003INSPECT FOR COLLATERAL DAMAGE                                                         
+CD MBIKEE    0802              00PKCAAAAF003001MECH-02            
+CB MBIKEE    0802              00PKCAAAAF004INSTALL NEW COMPONENT                                                                 
+CD MBIKEE    0802              00PKCAAAAF004001MECH-02            
+CB MBIKEE    0802              00PKCAAAAF005VERIFY PROPER OPERATION                                                               
+CD MBIKEE    0802              00PKCAAAAF005001MECH-02            
+CA MBIKEE    0801              00PPPSAAAA                                                            UPDATE MOTOR FIRMWARE               0030.00                                            
+CB MBIKEE    0801              00PPPSAAAA001PREPARE BICYCLE FOR SERVICE                                                           
+CD MBIKEE    0801              00PPPSAAAA001001MECH-02            
+CB MBIKEE    0801              00PPPSAAAA002REMOVE DEFECTIVE COMPONENT                                                            
+CD MBIKEE    0801              00PPPSAAAA002001MECH-02            
+CB MBIKEE    0801              00PPPSAAAA003INSPECT FOR COLLATERAL DAMAGE                                                         
+CD MBIKEE    0801              00PPPSAAAA003001MECH-02            
+CB MBIKEE    0801              00PPPSAAAA004INSTALL NEW COMPONENT                                                                 
+CD MBIKEE    0801              00PPPSAAAA004001MECH-02            
+CB MBIKEE    0801              00PPPSAAAA005VERIFY PROPER OPERATION                                                               
+CD MBIKEE    0801              00PPPSAAAA005001MECH-02            
+CA MBIKEE    0701              00PKCAAAAG                                                            REPLACE DROPPER POST                0030.00                                            
+CB MBIKEE    0701              00PKCAAAAG001PREPARE BICYCLE FOR SERVICE                                                           
+CD MBIKEE    0701              00PKCAAAAG001001MECH-02            
+CB MBIKEE    0701              00PKCAAAAG002REMOVE DEFECTIVE COMPONENT                                                            
+CD MBIKEE    0701              00PKCAAAAG002001MECH-02            
+CB MBIKEE    0701              00PKCAAAAG003INSPECT FOR COLLATERAL DAMAGE                                                         
+CD MBIKEE    0701              00PKCAAAAG003001MECH-02            
+CB MBIKEE    0701              00PKCAAAAG004INSTALL NEW COMPONENT                                                                 
+CD MBIKEE    0701              00PKCAAAAG004001MECH-02            
+CB MBIKEE    0701              00PKCAAAAG005VERIFY PROPER OPERATION                                                               
+CD MBIKEE    0701              00PKCAAAAG005001MECH-02            
+CA MBIKEE    0803              00PKCAAAAH                                                            REPLACE DISPLAY UNIT                0030.00                                            
+CB MBIKEE    0803              00PKCAAAAH001PREPARE BICYCLE FOR SERVICE                                                           
+CD MBIKEE    0803              00PKCAAAAH001001MECH-02            
+CB MBIKEE    0803              00PKCAAAAH002REMOVE DEFECTIVE COMPONENT                                                            
+CD MBIKEE    0803              00PKCAAAAH002001MECH-02            
+CB MBIKEE    0803              00PKCAAAAH003INSPECT FOR COLLATERAL DAMAGE                                                         
+CD MBIKEE    0803              00PKCAAAAH003001MECH-02            
+CB MBIKEE    0803              00PKCAAAAH004INSTALL NEW COMPONENT                                                                 
+CD MBIKEE    0803              00PKCAAAAH004001MECH-02            
+CB MBIKEE    0803              00PKCAAAAH005VERIFY PROPER OPERATION                                                               
+CD MBIKEE    0803              00PKCAAAAH005001MECH-02            
+CA MBIKEE    05012             00PSCAAAAC                                                            TRUE FRONT WHEEL                    0030.00                                            
+CB MBIKEE    05012             00PSCAAAAC001PREPARE BICYCLE FOR SERVICE                                                           
+CD MBIKEE    05012             00PSCAAAAC001001MECH-02            
+CB MBIKEE    05012             00PSCAAAAC002REMOVE DEFECTIVE COMPONENT                                                            
+CD MBIKEE    05012             00PSCAAAAC002001MECH-02            
+CB MBIKEE    05012             00PSCAAAAC003INSPECT FOR COLLATERAL DAMAGE                                                         
+CD MBIKEE    05012             00PSCAAAAC003001MECH-02            
+CB MBIKEE    05012             00PSCAAAAC004INSTALL NEW COMPONENT                                                                 
+CD MBIKEE    05012             00PSCAAAAC004001MECH-02            
+CB MBIKEE    05012             00PSCAAAAC005VERIFY PROPER OPERATION                                                               
+CD MBIKEE    05012             00PSCAAAAC005001MECH-02            
+CA MBIKEE    05022             00PSCAAAAD                                                            TRUE REAR WHEEL                     0030.00                                            
+CB MBIKEE    05022             00PSCAAAAD001PREPARE BICYCLE FOR SERVICE                                                           
+CD MBIKEE    05022             00PSCAAAAD001001MECH-02            
+CB MBIKEE    05022             00PSCAAAAD002REMOVE DEFECTIVE COMPONENT                                                            
+CD MBIKEE    05022             00PSCAAAAD002001MECH-02            
+CB MBIKEE    05022             00PSCAAAAD003INSPECT FOR COLLATERAL DAMAGE                                                         
+CD MBIKEE    05022             00PSCAAAAD003001MECH-02            
+CB MBIKEE    05022             00PSCAAAAD004INSTALL NEW COMPONENT                                                                 
+CD MBIKEE    05022             00PSCAAAAD004001MECH-02            
+CB MBIKEE    05022             00PSCAAAAD005VERIFY PROPER OPERATION                                                               
+CD MBIKEE    05022             00PSCAAAAD005001MECH-02            
+CA MBIKEE    0201              00PKCAAAAI                                                            REPLACE FRONT FORK                  0030.00                                            
+CB MBIKEE    0201              00PKCAAAAI001PREPARE BICYCLE FOR SERVICE                                                           
+CD MBIKEE    0201              00PKCAAAAI001001MECH-02            
+CB MBIKEE    0201              00PKCAAAAI002REMOVE DEFECTIVE COMPONENT                                                            
+CD MBIKEE    0201              00PKCAAAAI002001MECH-02            
+CB MBIKEE    0201              00PKCAAAAI003INSPECT FOR COLLATERAL DAMAGE                                                         
+CD MBIKEE    0201              00PKCAAAAI003001MECH-02            
+CB MBIKEE    0201              00PKCAAAAI004INSTALL NEW COMPONENT                                                                 
+CD MBIKEE    0201              00PKCAAAAI004001MECH-02            
+CB MBIKEE    0201              00PKCAAAAI005VERIFY PROPER OPERATION                                                               
+CD MBIKEE    0201              00PKCAAAAI005001MECH-02            
+CA MBIKEE    0202              00PKCAAAAJ                                                            REPLACE REAR SHOCK                  0030.00                                            
+CB MBIKEE    0202              00PKCAAAAJ001PREPARE BICYCLE FOR SERVICE                                                           
+CD MBIKEE    0202              00PKCAAAAJ001001MECH-02            
+CB MBIKEE    0202              00PKCAAAAJ002REMOVE DEFECTIVE COMPONENT                                                            
+CD MBIKEE    0202              00PKCAAAAJ002001MECH-02            
+CB MBIKEE    0202              00PKCAAAAJ003INSPECT FOR COLLATERAL DAMAGE                                                         
+CD MBIKEE    0202              00PKCAAAAJ003001MECH-02            
+CB MBIKEE    0202              00PKCAAAAJ004INSTALL NEW COMPONENT                                                                 
+CD MBIKEE    0202              00PKCAAAAJ004001MECH-02            
+CB MBIKEE    0202              00PKCAAAAJ005VERIFY PROPER OPERATION                                                               
+CD MBIKEE    0202              00PKCAAAAJ005001MECH-02            
+CG MBIKEE    05014             00PKCAAAAATOOLZTL-HEX-SET                      00001EA
+CG MBIKEE    05014             00PKCAAAAATOOLZTL-LVR-TR                       00001SE
+CG MBIKEE    05014             00PKCAAAAATOOLZTL-PMP-FLR                      00001EA
+CG MBIKEE    05024             00PKCAAAABTOOLZTL-HEX-SET                      00001EA
+CG MBIKEE    05024             00PKCAAAABTOOLZTL-LVR-TR                       00001SE
+CG MBIKEE    05024             00PKCAAAABTOOLZTL-PMP-FLR                      00001EA
+CG MBIKEE    0303              00PKCAAAACTOOLZTL-HEX-SET                      00001EA
+CG MBIKEE    0401              00PSCAAAAATOOLZTL-HEX-SET                      00001EA
+CG MBIKEE    0401              00PSCAAAAABRKCOBK-BLD-PRO                      00001SE
+CG MBIKEE    0402              00PSCAAABBTOOLZTL-HEX-SET                      00001EA
+CG MBIKEE    0402              00PSCAAABBBRKCOBK-BLD-PRO                      00001SE
+CG MBIKEE    04014             00PKCAAAADTOOLZTL-HEX-SET                      00001EA
+CG MBIKEE    04014             00PKCAAAADBRKCOBK-BLD-PRO                      00001SE
+CG MBIKEE    04024             00PKCAAAAETOOLZTL-HEX-SET                      00001EA
+CG MBIKEE    04024             00PKCAAAAEBRKCOBK-BLD-PRO                      00001SE
+CG MBIKEE    0802              00PKCAAAAFTOOLZTL-HEX-SET                      00001EA
+CG MBIKEE    0802              00PKCAAAAFBATRYBT-DGN-GUI                      00001SE
+CG MBIKEE    0801              00PPPSAAAATOOLZTL-HEX-SET                      00001EA
+CG MBIKEE    0801              00PPPSAAAABATRYBT-DGN-GUI                      00001SE
+CG MBIKEE    0701              00PKCAAAAGTOOLZTL-HEX-SET                      00001EA
+CG MBIKEE    0803              00PKCAAAAHTOOLZTL-HEX-SET                      00001EA
+CG MBIKEE    0803              00PKCAAAAHBATRYBT-DGN-GUI                      00001SE
+CG MBIKEE    05012             00PSCAAAACTOOLZTL-HEX-SET                      00001EA
+CG MBIKEE    05022             00PSCAAAADTOOLZTL-HEX-SET                      00001EA
+CG MBIKEE    0201              00PKCAAAAITOOLZTL-HEX-SET                      00001EA
+CG MBIKEE    0202              00PKCAAAAJTOOLZTL-HEX-SET                      00001EA
