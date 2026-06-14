@@ -124,7 +124,7 @@
             font-size: 1rem;
         }
         .security-notice p { margin: 0 0 1rem 0; }
-        .security-notice ol { margin: 0; padding-left: 1.5rem; }
+        .security-notice ul { margin: 0; padding-left: 1.5rem; }
         .security-notice li { margin-bottom: 0.5rem; }
 
         .section-title {
@@ -172,7 +172,8 @@
         }
         .mission-box h3 { margin: 0 0 1rem 0; font-size: 1.25rem; }
         .mission-box p { margin: 0 0 1rem 0; color: var(--text-muted); text-align: justify;}
-        .mission-box p:last-child { margin: 0; }
+        .mission-box ul { margin: 0; padding-left: 1.5rem; color: var(--text-muted); }
+        .mission-box li { margin-bottom: 0.5rem; }
 
         .gallery-grid {
             display: grid;
@@ -268,14 +269,14 @@
         
         <div class="download-panel">
             <h2>Acquire the Software</h2>
-            <p>Download the latest standalone executable file and its associated sample fixed-width dataset.</p>
+            <p>Download the standalone executable and the sample fixed-width dataset.</p>
             
             <div class="btn-group">
-                <a href="https://github.com/Davidoneo/lsar-sandbox-web/releases/download/v1.0.0/main.exe" class="btn btn-primary">
+                <a href="INSERISCI_QUI_IL_LINK_DELLA_RELEASE" class="btn btn-primary">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                     Download Sandbox (.exe)
                 </a>
-                <a href="bike_example.txt" download class="btn btn-outline">
+                <a href="bike_example_fixed.txt" download class="btn btn-outline">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                     Sample Dataset (.txt)
                 </a>
@@ -286,19 +287,23 @@
                     <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                     Bypassing Windows Execution Restrictions
                 </h4>
-                <p>Because this application is an independent tool distributed without a commercial EV code signing certificate, Windows browsers and SmartScreen components will flag it. Please execute the following overrides to run the app:</p>
-                <ol>
-                    <li><strong>Browser Download (Edge/Chrome):</strong> If the browser flags the download, click the downloads icon, select the three dots next to the file, choose <em>"Keep"</em>, and then click <em>"Keep anyway"</em>.</li>
-                    <li><strong>Initial Launch (Windows SmartScreen):</strong> When double-clicking the `.exe` file, a blue protection message will block execution. Click the text link labeled <em>"More info"</em> in the upper left, then click the <em>"Run anyway"</em> button that appears at the bottom.</li>
-                    <li><strong>Strict Environments (Windows 11):</strong> Certain Windows 11 policies strictly inhibit unverified files from opening entirely. If the popup blocks you without a "Run anyway" option, right-click the downloaded `.exe` file, select <em>Properties</em>, look at the bottom of the General tab, check the <strong>"Unblock"</strong> box, and click Apply.</li>
-                </ol>
+                <p>As an independently distributed tool without a commercial EV certificate, Windows SmartScreen may flag the executable. To run the app:</p>
+                <ul>
+                    <li><strong>Browser (Edge/Chrome):</strong> Click the downloads icon, select the three dots next to the file, choose <em>"Keep"</em>, and then <em>"Keep anyway"</em>.</li>
+                    <li><strong>SmartScreen:</strong> When double-clicking the `.exe`, click <em>"More info"</em> in the upper left, then <em>"Run anyway"</em>.</li>
+                    <li><strong>Windows 11:</strong> Right-click the `.exe` file, select <em>Properties</em>, check the <strong>"Unblock"</strong> box at the bottom of the General tab, and click Apply.</li>
+                </ul>
             </div>
         </div>
 
         <div class="mission-box">
             <h3>Bridging the Logistics Gap</h3>
-            <p>Enterprise Logistic Support Analysis Record (LSAR) software platforms impose massive financial commitments via licensing fees, paired with complex enterprise IT overhead (Oracle, SQL Server deployments). <strong>Minimal LSAR Sandbox</strong> was developed to eliminate these infrastructure barriers.</p>
-            <p>This desktop utility is provided entirely free of charge to satisfy three crucial ecosystem workflows: providing **Academic & Training Environments** for universities or engineering courses studying the data schema mechanics of MIL-STD-1388-2B; offering **Bridge Software Environments** for Small-to-Medium Enterprises (SMEs) managing smaller defense subcontracts where corporate platform overhead would erase project margins; and delivering an isolated **Local Test Sandbox** for ILS/IPS engineers who need to quickly parse and validate fixed-width positional data coming from tier-three sub-vendors without altering enterprise production databases.</p>
+            <p>Enterprise LSAR software often requires expensive licenses and complex IT infrastructure. <strong>Minimal LSAR Sandbox</strong> eliminates these barriers by offering a free, lightweight alternative designed for:</p>
+            <ul>
+                <li><strong>Academia & Training:</strong> Learn the data schema mechanics of MIL-STD-1388-2B.</li>
+                <li><strong>SMEs:</strong> Manage smaller defense subcontracts without massive corporate platform overhead.</li>
+                <li><strong>ILS/IPS Engineers:</strong> A local test sandbox to parse and validate positional flat-files from sub-vendors prior to enterprise database imports.</li>
+            </ul>
         </div>
 
         <h2 class="section-title">Technical Objectives</h2>
@@ -308,45 +313,45 @@
                     <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
                 </div>
                 <h3>Zero Server Setup</h3>
-                <p>No installer routines, no database administrators required. The relational database engine runs completely embedded inside the local executable via SQLite. Work locally with full data privacy.</p>
+                <p>No installers or DB admins required. The SQLite engine is fully embedded in the local executable. Work locally with 100% data privacy.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">
                     <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
                 </div>
                 <h3>Strict Data Integrity</h3>
-                <p>The system actively manages relational foreign key structures. It prevents broken logistics trees by rejecting data entries with orphaned LCN relations, missing hardware components, or invalid references.</p>
+                <p>Actively manages relational foreign key structures. It prevents broken logistics trees by rejecting entries with orphaned LCN relations or invalid references.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">
                     <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
                 </div>
                 <h3>Positional Text Exchange</h3>
-                <p>Supports importing and exporting full fixed-width legacy positional flat files (.txt). Features an interactive error-tracking UI that highlights alignment and syntax conflicts before writing to the database.</p>
+                <p>Import and export standard fixed-width positional flat files (.txt). Includes interactive error-tracking to highlight alignment and syntax conflicts.</p>
             </div>
         </div>
 
-        <h2 class="section-title">Database Engineering Interface</h2>
+        <h2 class="section-title">Interface Overview</h2>
         <div class="gallery-grid">
             <div class="gallery-card">
                 <img src="screenshot1.png" alt="LCN Table XB Breakdown View">
                 <div class="gallery-info">
                     <h4>Logistics Structure Definition (Table XB)</h4>
-                    <p>Hierarchical visualization and structural management of the physical and functional breakdown tree, with automatic UOC validation.</p>
+                    <p>Hierarchical visualization and structural management of the physical and functional breakdown tree.</p>
                 </div>
             </div>
             <div class="gallery-card">
                 <img src="screenshot2.png" alt="Hardware Items Table HA View">
                 <div class="gallery-info">
-                    <h4>Component & CAGE Catalog (Table HA)</h4>
-                    <p>Direct relational mapping of manufacturer part numbers and CAGE codes (Table XH) prior to their provisioning configuration.</p>
+                    <h4>Component Catalog (Table HA)</h4>
+                    <p>Direct relational mapping of manufacturer part numbers and CAGE codes prior to provisioning.</p>
                 </div>
             </div>
             <div class="gallery-card">
                 <img src="screenshot3.png" alt="Positional Export Interface View">
                 <div class="gallery-info">
                     <h4>Fixed-Width Export Processing</h4>
-                    <p>Granular export manager engineered to map individual character paddings and compile clean, compliant flat-file deliveries.</p>
+                    <p>Granular export manager engineered to compute character paddings and compile compliant flat files.</p>
                 </div>
             </div>
         </div>
@@ -359,21 +364,20 @@
             <div class="author-details">
                 <h3>Davide Lunardelli</h3>
                 <h4>Integrated Product Support (IPS) Engineer</h4>
-                <p>Minimal LSAR Sandbox was conceived and built completely independently. As a practicing ILS / IPS Engineering professional working within the international defense industry, I noticed a distinct lack of lightweight, lightweight sandbox tools available for junior training and supply-chain data validation.</p>
-                <p>This software environment contains absolutely zero spyware, trackers, telemetry, or network-calling components. It is safe to use on secured local systems. For inquiries, feature testing feedback, or bug reports, please contact me directly at: <a href="mailto:contact@lsarstudio.com">contact@lsarstudio.com</a>.</p>
+                <p>I am an active IPS Engineer working within the international defense industry. I developed this standalone tool to provide a lightweight, accessible alternative for junior training and supply-chain data validation. The software is 100% local, telemetry-free, and safe for secured systems. Contact: <a href="mailto:contact@lsarstudio.com">contact@lsarstudio.com</a>.</p>
             </div>
         </div>
 
         <h2 class="section-title">Compliance Disclaimer</h2>
         <div class="legal-text">
-            <strong>Limitation of Liability:</strong> This software is provided "AS IS", without warranty of any kind, express or implied. This application represents an independent development sandbox engineered primarily for educational instruction, data-entry scaffolding, and engineering verification. The author does not guarantee that this engine will successfully pass 100% of the stringent governmental compliance suites associated with data model handovers. The author assumes no liability for database corruption, loss of commercial files, or formatting sfasement resulting from standard fixed-width file manipulation. It is the absolute and exclusive responsibility of the operator to perform independent structural quality assurance checks before delivering files generated by this tool to official defense procurement agencies.
+            <strong>Limitation of Liability:</strong> This software is provided "AS IS", without warranty of any kind. It is an independent sandbox engineered primarily for educational instruction and engineering verification. The author does not guarantee 100% compliance with governmental MIL-STD-1388-2B data models and assumes no liability for database corruption or formatting misalignment. Users must independently validate all generated files before delivery to official defense procurement agencies.
         </div>
 
     </div>
 
     <footer>
         &copy; 2026 Davide Lunardelli - lsarstudio.com<br>
-        Minimal LSAR Sandbox is an open-source utility distributed under the terms of the MIT License.
+        Minimal LSAR Sandbox is an open-source utility distributed under the MIT License.
     </footer>
 
 </body>
