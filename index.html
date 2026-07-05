@@ -4,26 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Free Minimal LSAR Sandbox | MIL-STD-1388-2B Relational Engine</title>
+    <meta name="description" content="A free, standalone, offline MIL-STD-1388-2B Logistics Support Analysis Record (LSAR) editor. Embedded SQLite engine, fixed-width flat-file import/export, strict relational integrity. Windows executable, no install required.">
     <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACDSURBVDhPzZExCsAwDENzf88f2S79W5eAiaRk06bMAsmYg9PCO+Mh+xKREuDshwN+oP7A+K20S0R6oB4I3G/S/U55NqO8m1HezSjvZrj3M8q7GeXdjPJupk+9rVDeVSjvKpR3Fcq7CuVdhfKuQnlXobybaVM77XpXWqW8Svk40wD964XbTfVf4S6Z8R/UVv/Yw6b08wAAAABJRU5ErkJggg==">
     <style>
         :root {
-            --bg-body: #F8FAFC;
+            --bg-body: #F1F5F9;
             --bg-surface: #FFFFFF;
+            --bg-subtle: #F8FAFC;
             --text-main: #0F172A;
             --text-muted: #64748B;
+            --text-faint: #94A3B8;
             --primary: #0284C7;
             --primary-hover: #0369A1;
-            --secondary: #E2E8F0;
+            --accent: #38BDF8;
+            --border: #E2E8F0;
+            --border-strong: #CBD5E1;
             --secondary-hover: #F1F5F9;
             --dark-slate: #0F172A;
             --alert-bg: #FFFBEB;
             --alert-border: #F59E0B;
             --alert-text: #92400E;
-            --radius: 8px;
+            --code-bg: #E2E8F0;
+            --radius: 10px;
+            --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+            --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.12), 0 4px 10px -6px rgba(15, 23, 42, 0.08);
+            --shadow-lg: 0 24px 50px -12px rgba(15, 23, 42, 0.28);
         }
-        
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-body: #0B1120;
+                --bg-surface: #131C31;
+                --bg-subtle: #0F1830;
+                --text-main: #E7ECF4;
+                --text-muted: #94A3B8;
+                --text-faint: #64748B;
+                --primary: #38BDF8;
+                --primary-hover: #7DD3FC;
+                --accent: #38BDF8;
+                --border: #24314D;
+                --border-strong: #33415F;
+                --secondary-hover: #1B2740;
+                --dark-slate: #05070E;
+                --alert-bg: #2A2109;
+                --alert-border: #B4790C;
+                --alert-text: #FCD34D;
+                --code-bg: #24314D;
+                --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+                --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 4px 10px -6px rgba(0, 0, 0, 0.4);
+                --shadow-lg: 0 24px 50px -12px rgba(0, 0, 0, 0.7);
+            }
+        }
+
         * { box-sizing: border-box; }
-        
+
+        html { scroll-behavior: smooth; }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             line-height: 1.6;
@@ -34,119 +70,230 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        code {
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+            background: var(--code-bg);
+            padding: 0.1em 0.4em;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        /* ---------- HERO ---------- */
         .hero {
+            position: relative;
+            overflow: hidden;
             background-color: var(--dark-slate);
-            color: #FFFFFF;
-            padding: 5rem 2rem 6rem 2rem;
+            color: #F8FAFC;
+            padding: 5.5rem 2rem 7rem 2rem;
             text-align: center;
-            border-bottom: 4px solid var(--primary);
+            border-bottom: 1px solid rgba(56, 189, 248, 0.25);
+        }
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(148, 163, 184, 0.07) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(148, 163, 184, 0.07) 1px, transparent 1px);
+            background-size: 44px 44px;
+            mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, #000 40%, transparent 100%);
+            -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, #000 40%, transparent 100%);
+        }
+        .hero::after {
+            content: "";
+            position: absolute;
+            top: -30%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 900px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.22) 0%, transparent 65%);
+            pointer-events: none;
+        }
+        .hero-inner { position: relative; z-index: 1; }
+        .eyebrow {
+            display: inline-block;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1.25rem;
         }
         .hero h1 {
             margin: 0 0 1rem 0;
-            font-size: 3rem;
+            font-size: 3.4rem;
             font-weight: 800;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.03em;
+            line-height: 1.05;
         }
-        .hero h1 span { color: #38BDF8; }
-        .hero p {
-            max-width: 700px;
+        .hero h1 span { color: var(--accent); }
+        .hero-sub {
+            max-width: 640px;
             margin: 0 auto;
-            font-size: 1.25rem;
-            color: #94A3B8;
+            font-size: 1.2rem;
+            color: #B6C2D4;
             font-weight: 400;
         }
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.6rem;
+            margin-top: 2rem;
+        }
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: #CBD5E1;
+            background: rgba(148, 163, 184, 0.1);
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            padding: 0.35rem 0.8rem;
+            border-radius: 999px;
+        }
+        .chip svg { width: 14px; height: 14px; color: var(--accent); }
 
+        /* ---------- LAYOUT ---------- */
         .container {
-            max-width: 1100px;
-            margin: -3rem auto 2rem auto;
+            max-width: 1120px;
+            margin: 0 auto;
             padding: 0 2rem;
         }
+        .container.pull-up { margin-top: -3.75rem; position: relative; z-index: 2; }
 
+        .section-title {
+            font-size: 1.9rem;
+            font-weight: 750;
+            margin: 4.5rem 0 0.5rem 0;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+        }
+        .section-lead {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            margin: 0 0 2rem 0;
+            max-width: 640px;
+        }
+
+        /* ---------- DOWNLOAD PANEL ---------- */
         .download-panel {
             background: var(--bg-surface);
-            border: 1px solid var(--secondary);
-            border-radius: var(--radius);
-            padding: 2.5rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.75rem 2.5rem;
+            box-shadow: var(--shadow-lg);
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 1.5rem;
         }
-        .download-panel h2 { margin-top: 0; font-size: 1.5rem; color: var(--text-main); }
-        .download-panel > p { color: var(--text-muted); margin-bottom: 2rem; }
+        .download-panel h2 { margin: 0 0 0.4rem 0; font-size: 1.55rem; color: var(--text-main); letter-spacing: -0.01em; }
+        .download-panel > p { color: var(--text-muted); margin: 0 auto 2rem auto; max-width: 460px; }
 
         .btn-group {
             display: flex;
             justify-content: center;
             gap: 1rem;
             flex-wrap: wrap;
-            margin-bottom: 2rem;
         }
         .btn {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.875rem 1.5rem;
+            gap: 0.6rem;
+            padding: 0.9rem 1.7rem;
             font-size: 1rem;
             font-weight: 600;
-            border-radius: 6px;
+            border-radius: 8px;
             text-decoration: none;
-            transition: all 0.2s ease;
+            transition: transform 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease;
             cursor: pointer;
         }
         .btn svg { width: 20px; height: 20px; }
         .btn-primary {
-            background-color: var(--primary);
+            background: linear-gradient(180deg, var(--primary) 0%, var(--primary-hover) 100%);
             color: #FFFFFF;
-            border: 1px solid var(--primary);
+            border: 1px solid var(--primary-hover);
+            box-shadow: 0 6px 16px -6px rgba(2, 132, 199, 0.7);
         }
-        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 22px -6px rgba(2, 132, 199, 0.75); }
         .btn-outline {
             background-color: transparent;
             color: var(--text-main);
-            border: 1px solid var(--secondary);
+            border: 1px solid var(--border-strong);
         }
-        .btn-outline:hover { background-color: var(--secondary-hover); }
+        .btn-outline:hover { background-color: var(--secondary-hover); transform: translateY(-2px); }
+        .dl-meta {
+            margin-top: 1.4rem;
+            font-size: 0.85rem;
+            color: var(--text-faint);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+        .dl-meta .dot { color: var(--border-strong); }
 
         .security-notice {
             background-color: var(--alert-bg);
             border: 1px solid var(--alert-border);
-            border-radius: 6px;
-            padding: 1.5rem;
+            border-radius: 10px;
+            padding: 1.4rem 1.6rem;
             text-align: left;
             color: var(--alert-text);
-            font-size: 0.95rem;
+            font-size: 0.92rem;
+            margin-top: 2rem;
         }
         .security-notice h4 {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            margin: 0 0 0.5rem 0;
+            margin: 0 0 0.6rem 0;
             font-size: 1rem;
         }
-        .security-notice p { margin: 0 0 1rem 0; }
-        .security-notice ul { margin: 0; padding-left: 1.5rem; }
-        .security-notice li { margin-bottom: 0.5rem; }
-
-        .section-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin: 4rem 0 1.5rem 0;
-            color: var(--text-main);
-            letter-spacing: -0.02em;
+        .security-notice p { margin: 0 0 0.9rem 0; }
+        .security-notice ul { margin: 0; padding-left: 1.3rem; }
+        .security-notice li { margin-bottom: 0.45rem; }
+        .security-notice code { background: rgba(146, 64, 14, 0.14); color: inherit; }
+        @media (prefers-color-scheme: dark) {
+            .security-notice code { background: rgba(252, 211, 77, 0.14); }
         }
 
+        /* ---------- MISSION ---------- */
+        .mission-box {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+            padding: 2rem 2.25rem;
+            border-radius: 0 var(--radius) var(--radius) 0;
+            box-shadow: var(--shadow-sm);
+            margin-top: 4.5rem;
+        }
+        .mission-box h3 { margin: 0 0 0.9rem 0; font-size: 1.3rem; letter-spacing: -0.01em; }
+        .mission-box p { margin: 0 0 1rem 0; color: var(--text-muted); }
+        .mission-box ul { margin: 0; padding-left: 1.3rem; color: var(--text-muted); }
+        .mission-box li { margin-bottom: 0.5rem; }
+        .mission-box strong { color: var(--text-main); }
+
+        /* ---------- FEATURES ---------- */
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-bottom: 4rem;
+            gap: 1.5rem;
         }
         .feature-card {
             background: var(--bg-surface);
-            padding: 2rem;
+            padding: 1.9rem;
             border-radius: var(--radius);
-            border: 1px solid var(--secondary);
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--border-strong);
         }
         .feature-icon {
             display: inline-flex;
@@ -154,63 +301,113 @@
             justify-content: center;
             width: 48px;
             height: 48px;
-            background: #EFF6FF;
+            background: rgba(2, 132, 199, 0.1);
             color: var(--primary);
             border-radius: 12px;
             margin-bottom: 1.2rem;
         }
-        .feature-card h3 { margin: 0 0 0.75rem 0; font-size: 1.25rem; }
+        .feature-card h3 { margin: 0 0 0.6rem 0; font-size: 1.2rem; letter-spacing: -0.01em; }
         .feature-card p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
 
-        .mission-box {
+        /* ---------- GALLERY / SHOWCASE ---------- */
+        .shot {
             background: var(--bg-surface);
-            border-left: 4px solid var(--primary);
-            padding: 2rem;
-            border-radius: 0 var(--radius) var(--radius) 0;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-            margin-bottom: 4rem;
-        }
-        .mission-box h3 { margin: 0 0 1rem 0; font-size: 1.25rem; }
-        .mission-box p { margin: 0 0 1rem 0; color: var(--text-muted); text-align: justify;}
-        .mission-box ul { margin: 0; padding-left: 1.5rem; color: var(--text-muted); }
-        .mission-box li { margin-bottom: 0.5rem; }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 4rem;
-        }
-        .gallery-card {
-            background: var(--bg-surface);
-            border: 1px solid var(--secondary);
-            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            border-radius: 12px;
             overflow: hidden;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: var(--shadow-md);
         }
-        .gallery-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        .shot-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.65rem 0.9rem;
+            background: var(--bg-subtle);
+            border-bottom: 1px solid var(--border);
         }
-        .gallery-card img {
+        .shot-bar .dots { display: flex; gap: 0.35rem; }
+        .shot-bar .dots i { width: 11px; height: 11px; border-radius: 50%; display: block; }
+        .shot-bar .dots i:nth-child(1) { background: #F87171; }
+        .shot-bar .dots i:nth-child(2) { background: #FBBF24; }
+        .shot-bar .dots i:nth-child(3) { background: #34D399; }
+        .shot-bar span {
+            font-size: 0.78rem;
+            color: var(--text-faint);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            margin-left: 0.4rem;
+        }
+        .shot-img {
+            display: block;
             width: 100%;
             height: auto;
-            display: block;
-            border-bottom: 1px solid var(--secondary);
+            cursor: zoom-in;
+            background: #D1D5DB;
         }
-        .gallery-info { padding: 1.25rem; }
-        .gallery-info h4 { margin: 0 0 0.25rem 0; font-size: 1rem; color: var(--text-main); }
-        .gallery-info p { margin: 0; font-size: 0.875rem; color: var(--text-muted); }
+        .shot-caption {
+            padding: 1rem 1.2rem;
+            border-top: 1px solid var(--border);
+        }
+        .shot-caption h4 { margin: 0 0 0.2rem 0; font-size: 1rem; color: var(--text-main); }
+        .shot-caption p { margin: 0; font-size: 0.875rem; color: var(--text-muted); }
 
+        .showcase-featured { margin-bottom: 1.75rem; }
+        .showcase-duo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.75rem;
+            margin-bottom: 1.75rem;
+        }
+
+        /* ---------- LIGHTBOX ---------- */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 15, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            z-index: 100;
+            cursor: zoom-out;
+            backdrop-filter: blur(4px);
+        }
+        .lightbox.open { display: flex; }
+        .lightbox img {
+            max-width: 100%;
+            max-height: 92vh;
+            border-radius: 8px;
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.5rem;
+            color: #E2E8F0;
+            font-size: 2rem;
+            line-height: 1;
+            background: rgba(148, 163, 184, 0.15);
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .lightbox-close:hover { background: rgba(148, 163, 184, 0.3); }
+
+        /* ---------- AUTHOR ---------- */
         .author-box {
             display: flex;
             align-items: flex-start;
             gap: 1.5rem;
             background: var(--bg-surface);
-            border: 1px solid var(--secondary);
+            border: 1px solid var(--border);
             border-radius: var(--radius);
             padding: 2rem;
-            margin-bottom: 4rem;
+            box-shadow: var(--shadow-sm);
         }
         .author-avatar {
             display: flex;
@@ -218,40 +415,45 @@
             justify-content: center;
             width: 64px;
             height: 64px;
-            background: #F1F5F9;
-            color: #475569;
+            background: rgba(2, 132, 199, 0.1);
+            color: var(--primary);
             border-radius: 50%;
             flex-shrink: 0;
         }
         .author-avatar svg { width: 32px; height: 32px; }
-        .author-details h3 { margin: 0 0 0.25rem 0; font-size: 1.25rem; }
+        .author-details h3 { margin: 0 0 0.2rem 0; font-size: 1.25rem; }
         .author-details h4 { margin: 0 0 1rem 0; font-size: 0.95rem; color: var(--text-muted); font-weight: 500; }
-        .author-details p { margin: 0 0 0.5rem 0; color: #334155; font-size: 0.95rem; text-align: justify; }
+        .author-details p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
         .author-details a { color: var(--primary); text-decoration: none; font-weight: 600; }
         .author-details a:hover { text-decoration: underline; }
 
+        /* ---------- LEGAL / FOOTER ---------- */
         .legal-text {
             font-size: 0.85rem;
-            color: #94A3B8;
-            text-align: justify;
-            padding: 2rem;
-            background: var(--bg-surface);
+            color: var(--text-muted);
+            padding: 1.75rem 2rem;
+            background: var(--bg-subtle);
             border-radius: var(--radius);
-            border: 1px solid var(--secondary);
+            border: 1px solid var(--border);
         }
+        .legal-text strong { color: var(--text-main); }
         footer {
             text-align: center;
             padding: 3rem 2rem;
-            color: var(--text-muted);
+            color: var(--text-faint);
             font-size: 0.9rem;
-            margin-top: 2rem;
-            border-top: 1px solid var(--secondary);
+            margin-top: 4rem;
+            border-top: 1px solid var(--border);
         }
+        footer a { color: var(--text-muted); text-decoration: none; }
+        footer a:hover { color: var(--primary); }
 
         @media (max-width: 768px) {
-            .hero h1 { font-size: 2.2rem; }
-            .hero { padding: 4rem 1rem 5rem 1rem; }
-            .container { padding: 0 1rem; }
+            .hero { padding: 4rem 1.25rem 5.5rem 1.25rem; }
+            .hero h1 { font-size: 2.4rem; }
+            .hero-sub { font-size: 1.05rem; }
+            .container { padding: 0 1.25rem; }
+            .download-panel { padding: 2rem 1.4rem; }
             .btn-group { flex-direction: column; }
             .btn { width: 100%; justify-content: center; }
             .author-box { flex-direction: column; align-items: center; text-align: center; }
@@ -261,124 +463,199 @@
 <body>
 
     <header class="hero">
-        <h1>Minimal LSAR <span>Sandbox</span></h1>
-        <p>A standalone, offline relational database environment for the MIL-STD-1388-2B logistics standard.</p>
+        <div class="hero-inner">
+            <span class="eyebrow">Free &middot; Open Source &middot; Offline</span>
+            <h1>Minimal LSAR <span>Sandbox</span></h1>
+            <p class="hero-sub">A standalone relational database environment for the MIL-STD-1388-2B logistics support analysis standard — engineered to run entirely on your machine.</p>
+            <div class="hero-meta">
+                <span class="chip">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    MIL-STD-1388-2B
+                </span>
+                <span class="chip">Embedded SQLite</span>
+                <span class="chip">103-table schema</span>
+                <span class="chip">Windows &middot; No install</span>
+                <span class="chip">MIT License</span>
+            </div>
+        </div>
     </header>
 
-    <div class="container">
-        
+    <div class="container pull-up">
+
         <div class="download-panel">
             <h2>Acquire the Software</h2>
-            <p>Download the standalone executable and the sample fixed-width dataset.</p>
-            
+            <p>Download the standalone executable and the sample fixed-width dataset. Nothing to install — run it and start editing.</p>
+
             <div class="btn-group">
-                <a href="https://github.com/Davidoneo/lsar-sandbox-web/releases/download/v1.0.2/LSAR_minimal.exe" class="btn btn-primary">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                <a href="https://github.com/Davidoneo/lsar-sandbox-web/releases/download/v1.0.3/LSAR_minimal.exe" class="btn btn-primary">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                     Download Sandbox (.exe)
                 </a>
                 <a href="bike_example.txt" download class="btn btn-outline">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     Sample Dataset (.txt)
                 </a>
             </div>
 
+            <div class="dl-meta">
+                <span>Version 1.0.3</span>
+                <span class="dot">&bull;</span>
+                <span>Windows 64-bit</span>
+                <span class="dot">&bull;</span>
+                <span>~13 MB</span>
+                <span class="dot">&bull;</span>
+                <span><a href="https://github.com/Davidoneo/lsar-sandbox-web/releases" style="color:var(--primary);text-decoration:none;font-weight:600;">Release notes &amp; history</a></span>
+            </div>
+
             <div class="security-notice">
                 <h4>
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                     Bypassing Windows Execution Restrictions
                 </h4>
                 <p>As an independently distributed tool without a commercial EV certificate, Windows SmartScreen may flag the executable. To run the app:</p>
                 <ul>
-                    <li><strong>Browser (Edge/Chrome):</strong> Click the downloads icon, select the three dots next to the file, choose <em>"Keep"</em>, and then <em>"Keep anyway"</em>.</li>
-                    <li><strong>SmartScreen:</strong> When double-clicking the `.exe`, click <em>"More info"</em> in the upper left, then <em>"Run anyway"</em>.</li>
-                    <li><strong>Windows 11:</strong> Right-click the `.exe` file, select <em>Properties</em>, check the <strong>"Unblock"</strong> box at the bottom of the General tab, and click Apply.</li>
+                    <li><strong>Browser (Edge / Chrome):</strong> Open the downloads list, click the three dots next to the file, choose <em>"Keep"</em>, then <em>"Keep anyway"</em>.</li>
+                    <li><strong>SmartScreen:</strong> When launching the <code>.exe</code>, click <em>"More info"</em> in the upper left, then <em>"Run anyway"</em>.</li>
+                    <li><strong>Windows 11:</strong> Right-click the <code>.exe</code>, select <em>Properties</em>, tick the <strong>"Unblock"</strong> box on the General tab, then Apply.</li>
                 </ul>
             </div>
         </div>
 
         <div class="mission-box">
             <h3>Bridging the Logistics Gap</h3>
-            <p>Enterprise LSAR software often requires expensive licenses and complex IT infrastructure. <strong>Minimal LSAR Sandbox</strong> eliminates these barriers by offering a free, lightweight alternative designed for:</p>
+            <p>Enterprise LSAR software often requires expensive licenses and complex IT infrastructure. <strong>Minimal LSAR Sandbox</strong> removes those barriers with a free, lightweight alternative designed for:</p>
             <ul>
-                <li><strong>Academia & Training:</strong> Learn the data schema mechanics of MIL-STD-1388-2B.</li>
+                <li><strong>Academia &amp; Training:</strong> Learn the data schema mechanics of MIL-STD-1388-2B hands-on.</li>
                 <li><strong>SMEs:</strong> Manage smaller defense subcontracts without massive corporate platform overhead.</li>
-                <li><strong>ILS/IPS Engineers:</strong> A local test sandbox to parse and validate positional flat-files from sub-vendors prior to enterprise database imports.</li>
+                <li><strong>ILS / IPS Engineers:</strong> A local sandbox to parse and validate positional flat-files from sub-vendors before enterprise database imports.</li>
             </ul>
         </div>
 
         <h2 class="section-title">Technical Objectives</h2>
+        <p class="section-lead">Purpose-built around the realities of logistics data exchange — local, strict, and standards-driven.</p>
         <div class="features-grid">
             <div class="feature-card">
                 <div class="feature-icon">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
                 </div>
                 <h3>Zero Server Setup</h3>
-                <p>No installers or DB admins required. The SQLite engine is fully embedded in the local executable. Work locally with 100% data privacy.</p>
+                <p>No installers or DB admins required. The SQLite engine is fully embedded in the local executable. Work offline with 100% data privacy.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
                 </div>
                 <h3>Strict Data Integrity</h3>
-                <p>Actively manages relational foreign key structures. It prevents broken logistics trees by rejecting entries with orphaned LCN relations or invalid references.</p>
+                <p>Actively manages relational foreign-key structures, preventing broken logistics trees by rejecting entries with orphaned LCN relations or invalid references.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
                 </div>
                 <h3>Positional Text Exchange</h3>
-                <p>Import and export standard fixed-width positional flat files (.txt). Includes interactive error-tracking to highlight alignment and syntax conflicts.</p>
+                <p>Import and export standard fixed-width positional flat files (.txt), with shared field-width rules so every column round-trips at the exact character offset.</p>
             </div>
         </div>
 
         <h2 class="section-title">Interface Overview</h2>
-        <div class="gallery-grid">
-            <div class="gallery-card">
-                <img src="Screenshot1.png" alt="LCN Table XB Breakdown View">
-                <div class="gallery-info">
-                    <h4>Logistics Structure Definition (Table XB)</h4>
-                    <p>Hierarchical visualization and structural management of the physical and functional breakdown tree.</p>
-                </div>
-            </div>
-            <div class="gallery-card">
-                <img src="Screenshot2.png" alt="Hardware Items Table HA View">
-                <div class="gallery-info">
-                    <h4>Component Catalog (Table HA)</h4>
-                    <p>Direct relational mapping of manufacturer part numbers and CAGE codes prior to provisioning.</p>
-                </div>
-            </div>
-            <div class="gallery-card">
-                <img src="Screenshot3.png" alt="Export Interface View">
-                <div class="gallery-info">
-                    <h4>Fixed-Width Export Processing</h4>
-                    <p>Granular export manager engineered to compute character paddings and compile compliant flat files (.txt format).</p>
-                </div>
-            </div>
+        <p class="section-lead">A focused desktop workspace over the full 103-table schema. Click any screenshot to enlarge.</p>
+
+        <div class="showcase-featured">
+            <figure class="shot" style="margin:0;">
+                <div class="shot-bar"><div class="dots"><i></i><i></i><i></i></div><span>Minimal LSAR Sandbox &mdash; XB: LCN Indentured Item</span></div>
+                <img class="shot-img" src="Screenshot_Grid.png" alt="Relational grid editor showing the XB LCN indentured item table" loading="lazy">
+                <figcaption class="shot-caption">
+                    <h4>Relational Grid Editor</h4>
+                    <p>Edit any of the 103 MIL-STD-1388-2B tables in a spreadsheet-style grid, navigated by functional area. Parent references and record counts stay visible as you work.</p>
+                </figcaption>
+            </figure>
+        </div>
+
+        <div class="showcase-duo">
+            <figure class="shot" style="margin:0;">
+                <div class="shot-bar"><div class="dots"><i></i><i></i><i></i></div><span>Search &amp; Filter</span></div>
+                <img class="shot-img" src="Screenshot_Search.png" alt="Live search filtering the HA item identification table" loading="lazy">
+                <figcaption class="shot-caption">
+                    <h4>Instant Search &amp; Filtering</h4>
+                    <p>Filter thousands of rows as you type, with a live "N of M rows match" counter to keep large tables workable.</p>
+                </figcaption>
+            </figure>
+            <figure class="shot" style="margin:0;">
+                <div class="shot-bar"><div class="dots"><i></i><i></i><i></i></div><span>Status Bar &amp; Column Info</span></div>
+                <img class="shot-img" src="Screenshot_StatusBar.png" alt="Status bar showing the selected column's type, width and constraints" loading="lazy">
+                <figcaption class="shot-caption">
+                    <h4>Live Column Intelligence</h4>
+                    <p>Select any cell to reveal its data type, fixed-width size, and key constraints — the schema explained inline as you edit.</p>
+                </figcaption>
+            </figure>
+        </div>
+
+        <div class="showcase-duo">
+            <figure class="shot" style="margin:0;">
+                <div class="shot-bar"><div class="dots"><i></i><i></i><i></i></div><span>LCN Indenture Tree</span></div>
+                <img class="shot-img" src="Screenshot_LCNTree.png" alt="Hierarchical LCN indenture tree of the physical breakdown" loading="lazy">
+                <figcaption class="shot-caption">
+                    <h4>LCN Indenture Tree</h4>
+                    <p>Visualise the physical and functional breakdown as a hierarchy; double-click any item to jump straight to its record in Table XB.</p>
+                </figcaption>
+            </figure>
+            <figure class="shot" style="margin:0;">
+                <div class="shot-bar"><div class="dots"><i></i><i></i><i></i></div><span>Fixed-Width Export</span></div>
+                <img class="shot-img" src="Screenshot_Export.png" alt="Export dialog selecting tables to compile into a flat file" loading="lazy">
+                <figcaption class="shot-caption">
+                    <h4>Fixed-Width Export</h4>
+                    <p>Pick the tables to include and compile a compliant positional flat file, with character padding computed per the standard.</p>
+                </figcaption>
+            </figure>
         </div>
 
         <h2 class="section-title">About the Author</h2>
         <div class="author-box">
             <div class="author-avatar">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-8 7h16a7 7 0 00-8-7z"></path></svg>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-8 7h16a7 7 0 00-8-7z"/></svg>
             </div>
             <div class="author-details">
                 <h3>Davide Lunardelli</h3>
                 <h4>Integrated Logistic Support (ILS) Engineer</h4>
-                <p>I am an active ILS Engineer working within the defense industry. I developed this standalone tool to provide a lightweight, accessible alternative for educational purposes or small projects. The software is 100% local and safe for secured systems. Contact: <a href="mailto:contact@lsarstudio.com">contact@lsarstudio.com</a>.</p>
+                <p>I am an active ILS Engineer working within the defense industry. I built this standalone tool to provide a lightweight, accessible alternative for educational purposes and small projects. The software is 100% local and safe for secured systems. Contact: <a href="mailto:contact@lsarstudio.com">contact@lsarstudio.com</a>.</p>
             </div>
         </div>
 
         <h2 class="section-title">Compliance Disclaimer</h2>
         <div class="legal-text">
-            <strong>Limitation of Liability:</strong> This software is provided "AS IS", without warranty of any kind. It is an independent sandbox engineered primarily for educational instruction and engineering verification. The author does not guarantee 100% compliance with governmental MIL-STD-1388-2B data models and assumes no liability for database corruption or formatting misalignment. Users must independently validate all generated files before delivery to official defense procurement agencies.
+            <strong>Limitation of Liability:</strong> This software is provided "AS IS", without warranty of any kind. It is an independent sandbox engineered primarily for educational instruction and engineering verification. The author does not guarantee full compliance with governmental MIL-STD-1388-2B data models and assumes no liability for database corruption or formatting misalignment. Users must independently validate all generated files before delivery to official defense procurement agencies.
         </div>
 
     </div>
 
     <footer>
-        &copy; 2026 Davide Lunardelli - lsarstudio.com<br>
+        &copy; 2026 Davide Lunardelli &middot; <a href="https://lsarstudio.com">lsarstudio.com</a><br>
         Minimal LSAR Sandbox is an open-source utility distributed under the MIT License.
     </footer>
+
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" aria-label="Close">&times;</button>
+        <img src="" alt="Enlarged screenshot">
+    </div>
+
+    <script>
+        (function () {
+            var lb = document.getElementById('lightbox');
+            var lbImg = lb.querySelector('img');
+            document.querySelectorAll('.shot-img').forEach(function (img) {
+                img.addEventListener('click', function () {
+                    lbImg.src = img.src;
+                    lbImg.alt = img.alt;
+                    lb.classList.add('open');
+                });
+            });
+            function close() { lb.classList.remove('open'); lbImg.src = ''; }
+            lb.addEventListener('click', close);
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') close();
+            });
+        })();
+    </script>
 
 </body>
 </html>
