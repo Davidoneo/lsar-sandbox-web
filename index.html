@@ -234,6 +234,18 @@
             flex-wrap: wrap;
         }
         .dl-meta .dot { color: var(--border-strong); }
+        .dl-note {
+            margin: 1.1rem auto 0 auto;
+            max-width: 560px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: var(--bg-subtle);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.7rem 1rem;
+        }
+        .dl-note strong { color: var(--text-main); }
+        .dl-note code { font-size: 0.82em; }
 
         .security-notice {
             background-color: var(--alert-bg);
@@ -484,12 +496,16 @@
 
         <div class="download-panel">
             <h2>Acquire the Software</h2>
-            <p>Download the standalone executable and the sample fixed-width dataset. Nothing to install — run it and start editing.</p>
+            <p>Download the standalone build for your platform, plus the sample fixed-width dataset. Nothing to install — run it and start editing.</p>
 
             <div class="btn-group">
                 <a href="https://github.com/Davidoneo/lsar-sandbox-web/releases/download/v1.0.3/LSAR_minimal.exe" class="btn btn-primary">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                    Download Sandbox (.exe)
+                    Windows (.exe)
+                </a>
+                <a href="https://github.com/Davidoneo/lsar-sandbox-web/releases/download/v1.0.3/LSAR_minimal_linux" class="btn btn-outline">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M4 5h16a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z"/></svg>
+                    Linux (64-bit)
                 </a>
                 <a href="bike_example.txt" download class="btn btn-outline">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
@@ -500,9 +516,7 @@
             <div class="dl-meta">
                 <span>Version 1.0.3</span>
                 <span class="dot">&bull;</span>
-                <span>Windows 64-bit</span>
-                <span class="dot">&bull;</span>
-                <span>~13 MB</span>
+                <span>Windows &amp; Linux &middot; 64-bit</span>
                 <span class="dot">&bull;</span>
                 <span><a href="https://github.com/Davidoneo/lsar-sandbox-web/releases" style="color:var(--primary);text-decoration:none;font-weight:600;">Release notes &amp; history</a></span>
             </div>
@@ -519,6 +533,8 @@
                     <li><strong>Windows 11:</strong> Right-click the <code>.exe</code>, select <em>Properties</em>, tick the <strong>"Unblock"</strong> box on the General tab, then Apply.</li>
                 </ul>
             </div>
+
+            <p class="dl-note"><strong>On Linux:</strong> mark the download executable, then run it — <code>chmod +x LSAR_minimal_linux &amp;&amp; ./LSAR_minimal_linux</code>. Requires glibc 2.14+ (any current 64-bit distribution).</p>
         </div>
 
         <div class="mission-box">
