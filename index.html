@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Minimal LSAR Sandbox | MIL-STD-1388-2B Relational Engine</title>
-    <meta name="description" content="A free, open-source, offline MIL-STD-1388-2B Logistics Support Analysis Record (LSAR) editor. Embedded SQLite engine, fixed-width flat-file import/export, and standalone Windows and Linux builds.">
+    <title>Minimal LSAR Sandbox | MIL-STD-1388-2B Desktop Editor</title>
+    <meta name="description" content="An open-source desktop editor for MIL-STD-1388-2B LSAR data. Browse and edit a local SQLite database, inspect relationships, and import or export fixed-width text files on Windows and Linux.">
     <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACDSURBVDhPzZExCsAwDENzf88f2S79W5eAiaRk06bMAsmYg9PCO+Mh+xKREuDshwN+oP7A+K20S0R6oB4I3G/S/U55NqO8m1HezSjvZrj3M8q7GeXdjPJupk+9rVDeVSjvKpR3Fcq7CuVdhfKuQnlXobybaVM77XpXWqW8Svk40wD964XbTfVf4S6Z8R/UVv/Yw6b08wAAAABJRU5ErkJggg==">
     <style>
         :root {
@@ -445,9 +445,9 @@
 
     <header class="hero">
         <div class="hero-inner">
-            <span class="eyebrow">Free &middot; Open Source &middot; Offline</span>
+            <span class="eyebrow">Open Source &middot; Local &middot; Windows and Linux</span>
             <h1>Minimal LSAR <span>Sandbox</span></h1>
-            <p class="hero-sub">A standalone relational database environment for the MIL-STD-1388-2B logistics support analysis standard — engineered to run entirely on your machine.</p>
+            <p class="hero-sub">A desktop application for viewing, editing, importing, and exporting MIL-STD-1388-2B LSAR data. It uses a local SQLite database and does not require a server.</p>
             <div class="hero-meta">
                 <span class="chip">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -464,8 +464,8 @@
     <div class="container pull-up">
 
         <div class="download-panel">
-            <h2>Acquire the Software</h2>
-            <p>Download a standalone 64-bit build, or inspect and fork the public source code.</p>
+            <h2>Download or View the Source</h2>
+            <p>Choose a standalone 64-bit build, or open the public repository to inspect, build, or fork the application.</p>
 
             <div class="btn-group">
                 <a href="https://github.com/Davidoneo/lsar-sandbox-web/releases/download/v1.0.3/LSAR_minimal.exe" class="btn btn-primary">
@@ -494,51 +494,51 @@
         </div>
 
         <div class="mission-box">
-            <h3>Bridging the Logistics Gap</h3>
-            <p>Enterprise LSAR software often requires expensive licenses and complex IT infrastructure. <strong>Minimal LSAR Sandbox</strong> removes those barriers with a free, lightweight alternative designed for:</p>
+            <h3>What It Is</h3>
+            <p><strong>Minimal LSAR Sandbox</strong> is a small desktop editor for working with data structured around MIL-STD-1388-2B. It is intended for learning, training, and limited technical checks.</p>
             <ul>
-                <li><strong>Academia &amp; Training:</strong> Learn the data schema mechanics of MIL-STD-1388-2B hands-on.</li>
-                <li><strong>SMEs:</strong> Manage smaller defense subcontracts without massive corporate platform overhead.</li>
-                <li><strong>ILS / IPS Engineers:</strong> A local sandbox to parse and validate positional flat-files from sub-vendors before enterprise database imports.</li>
+                <li><strong>Database:</strong> a local SQLite file using a 103-table LSAR schema.</li>
+                <li><strong>Functions:</strong> table editing, relational navigation, search, and LCN tree inspection.</li>
+                <li><strong>Data exchange:</strong> import and export of positional fixed-width text files.</li>
             </ul>
         </div>
 
-        <h2 class="section-title">Technical Objectives</h2>
-        <p class="section-lead">Purpose-built around the realities of logistics data exchange — local, strict, and standards-driven.</p>
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-lead">The application runs locally and keeps the database and exported files on the user's computer.</p>
         <div class="features-grid">
             <div class="feature-card">
                 <div class="feature-icon">
                     <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
                 </div>
-                <h3>Zero Server Setup</h3>
-                <p>No installers or DB admins required. The SQLite engine is fully embedded in the local executable. Work offline with 100% data privacy.</p>
+                <h3>Local SQLite Database</h3>
+                <p>Create a blank database or open an existing file. The SQLite engine is included in the standalone application; no account or database server is required.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">
                     <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
                 </div>
-                <h3>Strict Data Integrity</h3>
-                <p>Actively manages relational foreign-key structures, preventing broken logistics trees by rejecting entries with orphaned LCN relations or invalid references.</p>
+                <h3>Relational Checks</h3>
+                <p>Foreign-key constraints and parent-child links help identify invalid references and navigate related records.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">
                     <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
                 </div>
-                <h3>Positional Text Exchange</h3>
-                <p>Import and export standard fixed-width positional flat files (.txt), with shared field-width rules so every column round-trips at the exact character offset.</p>
+                <h3>Fixed-Width Text Files</h3>
+                <p>Import and export positional text files using the field widths defined for each table and column.</p>
             </div>
         </div>
 
-        <h2 class="section-title">Interface Overview</h2>
-        <p class="section-lead">A focused desktop workspace over the full 103-table schema. Click any screenshot to enlarge.</p>
+        <h2 class="section-title">Main Functions</h2>
+        <p class="section-lead">The screenshots below show the current desktop application. Click any image to enlarge it.</p>
 
         <div class="showcase-featured">
             <figure class="shot" style="margin:0;">
                 <div class="shot-bar"><div class="dots"><i></i><i></i><i></i></div><span>Minimal LSAR Sandbox &mdash; XB: LCN Indentured Item</span></div>
                 <img class="shot-img" src="Screenshot_Grid.png" alt="Relational grid editor showing the XB LCN indentured item table" loading="lazy">
                 <figcaption class="shot-caption">
-                    <h4>Relational Grid Editor</h4>
-                    <p>Edit any of the 103 MIL-STD-1388-2B tables in a spreadsheet-style grid, navigated by functional area. Parent references and record counts stay visible as you work.</p>
+                    <h4>Table Editor</h4>
+                    <p>Browse and edit the 103 tables in a spreadsheet-style grid. Tables are grouped by functional area, with row counts and parent references shown in the interface.</p>
                 </figcaption>
             </figure>
         </div>
@@ -548,16 +548,16 @@
                 <div class="shot-bar"><div class="dots"><i></i><i></i><i></i></div><span>Search &amp; Filter</span></div>
                 <img class="shot-img" src="Screenshot_Search.png" alt="Live search filtering the HA item identification table" loading="lazy">
                 <figcaption class="shot-caption">
-                    <h4>Instant Search &amp; Filtering</h4>
-                    <p>Filter thousands of rows as you type, with a live "N of M rows match" counter to keep large tables workable.</p>
+                    <h4>Search and Filtering</h4>
+                    <p>Filter the current table as you type and see how many rows match the search.</p>
                 </figcaption>
             </figure>
             <figure class="shot" style="margin:0;">
                 <div class="shot-bar"><div class="dots"><i></i><i></i><i></i></div><span>Status Bar &amp; Column Info</span></div>
                 <img class="shot-img" src="Screenshot_StatusBar.png" alt="Status bar showing the selected column's type, width and constraints" loading="lazy">
                 <figcaption class="shot-caption">
-                    <h4>Live Column Intelligence</h4>
-                    <p>Select any cell to reveal its data type, fixed-width size, and key constraints — the schema explained inline as you edit.</p>
+                    <h4>Column Information</h4>
+                    <p>Select a cell to see the column type, fixed-width size, and primary- or foreign-key constraints.</p>
                 </figcaption>
             </figure>
         </div>
@@ -568,7 +568,7 @@
                 <img class="shot-img" src="Screenshot_LCNTree.png" alt="Hierarchical LCN indenture tree of the physical breakdown" loading="lazy">
                 <figcaption class="shot-caption">
                     <h4>LCN Indenture Tree</h4>
-                    <p>Visualise the physical and functional breakdown as a hierarchy; double-click any item to jump straight to its record in Table XB.</p>
+                    <p>View the Table XB indenture structure as a hierarchy and open the corresponding record from the tree.</p>
                 </figcaption>
             </figure>
             <figure class="shot" style="margin:0;">
@@ -576,7 +576,7 @@
                 <img class="shot-img" src="Screenshot_Export.png" alt="Export dialog selecting tables to compile into a flat file" loading="lazy">
                 <figcaption class="shot-caption">
                     <h4>Fixed-Width Export</h4>
-                    <p>Pick the tables to include and compile a compliant positional flat file, with character padding computed per the standard.</p>
+                    <p>Select the tables to include and generate a positional text file using the configured field widths.</p>
                 </figcaption>
             </figure>
         </div>
@@ -589,20 +589,20 @@
             <div class="author-details">
                 <h3>Davide Lunardelli</h3>
                 <h4>Integrated Logistic Support (ILS) Engineer</h4>
-                <p>I am an active ILS Engineer working within the defense industry. I built this standalone tool to provide a lightweight, accessible alternative for educational purposes and small projects. The software is 100% local and safe for secured systems. Contact: <a href="mailto:contact@lsarstudio.com">contact@lsarstudio.com</a>.</p>
+                <p>I work in Integrated Logistic Support and built this application for learning, training, and small technical exercises involving LSAR data. Contact: <a href="mailto:contact@lsarstudio.com">contact@lsarstudio.com</a>.</p>
             </div>
         </div>
 
-        <h2 class="section-title">Compliance Disclaimer</h2>
+        <h2 class="section-title">Scope and Limitations</h2>
         <div class="legal-text">
-            <strong>Limitation of Liability:</strong> This software is provided "AS IS", without warranty of any kind. It is an independent sandbox engineered primarily for educational instruction and engineering verification. The author does not guarantee full compliance with governmental MIL-STD-1388-2B data models and assumes no liability for database corruption or formatting misalignment. Users must independently validate all generated files before delivery to official defense procurement agencies.
+            This is an independent educational and engineering tool, not a certified production system. Complete compliance with every MIL-STD-1388-2B requirement is not guaranteed. Validate the database and every exported file before using them in an official delivery. The software is provided "AS IS" under the MIT License.
         </div>
 
     </div>
 
     <footer>
         &copy; 2026 Davide Lunardelli &middot; <a href="https://lsarstudio.com">lsarstudio.com</a><br>
-        Minimal LSAR Sandbox is an open-source utility distributed under the MIT License.
+        Open-source desktop application distributed under the MIT License.
     </footer>
 
     <div class="lightbox" id="lightbox">
