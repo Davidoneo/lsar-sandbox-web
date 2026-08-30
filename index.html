@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Free Minimal LSAR Sandbox | MIL-STD-1388-2B Relational Engine</title>
-    <meta name="description" content="A free, standalone, offline MIL-STD-1388-2B Logistics Support Analysis Record (LSAR) editor. Embedded SQLite engine, fixed-width flat-file import/export, strict relational integrity. Windows executable, no install required.">
+    <meta name="description" content="A free, open-source, offline MIL-STD-1388-2B Logistics Support Analysis Record (LSAR) editor. Embedded SQLite engine, fixed-width flat-file import/export, and standalone Windows and Linux builds.">
     <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACDSURBVDhPzZExCsAwDENzf88f2S79W5eAiaRk06bMAsmYg9PCO+Mh+xKREuDshwN+oP7A+K20S0R6oB4I3G/S/U55NqO8m1HezSjvZrj3M8q7GeXdjPJupk+9rVDeVSjvKpR3Fcq7CuVdhfKuQnlXobybaVM77XpXWqW8Svk40wD964XbTfVf4S6Z8R/UVv/Yw6b08wAAAABJRU5ErkJggg==">
     <style>
         :root {
@@ -21,9 +21,6 @@
             --border-strong: #CBD5E1;
             --secondary-hover: #F1F5F9;
             --dark-slate: #0F172A;
-            --alert-bg: #FFFBEB;
-            --alert-border: #F59E0B;
-            --alert-text: #92400E;
             --code-bg: #E2E8F0;
             --radius: 10px;
             --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
@@ -46,9 +43,6 @@
                 --border-strong: #33415F;
                 --secondary-hover: #1B2740;
                 --dark-slate: #05070E;
-                --alert-bg: #2A2109;
-                --alert-border: #B4790C;
-                --alert-text: #FCD34D;
                 --code-bg: #24314D;
                 --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
                 --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 4px 10px -6px rgba(0, 0, 0, 0.4);
@@ -246,31 +240,6 @@
         }
         .dl-note strong { color: var(--text-main); }
         .dl-note code { font-size: 0.82em; }
-
-        .security-notice {
-            background-color: var(--alert-bg);
-            border: 1px solid var(--alert-border);
-            border-radius: 10px;
-            padding: 1.4rem 1.6rem;
-            text-align: left;
-            color: var(--alert-text);
-            font-size: 0.92rem;
-            margin-top: 2rem;
-        }
-        .security-notice h4 {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin: 0 0 0.6rem 0;
-            font-size: 1rem;
-        }
-        .security-notice p { margin: 0 0 0.9rem 0; }
-        .security-notice ul { margin: 0; padding-left: 1.3rem; }
-        .security-notice li { margin-bottom: 0.45rem; }
-        .security-notice code { background: rgba(146, 64, 14, 0.14); color: inherit; }
-        @media (prefers-color-scheme: dark) {
-            .security-notice code { background: rgba(252, 211, 77, 0.14); }
-        }
 
         /* ---------- MISSION ---------- */
         .mission-box {
@@ -486,7 +455,7 @@
                 </span>
                 <span class="chip">Embedded SQLite</span>
                 <span class="chip">103-table schema</span>
-                <span class="chip">Windows &middot; No install</span>
+                <span class="chip">Windows &amp; Linux &middot; No install</span>
                 <span class="chip">MIT License</span>
             </div>
         </div>
@@ -496,7 +465,7 @@
 
         <div class="download-panel">
             <h2>Acquire the Software</h2>
-            <p>Download the standalone build for your platform, plus the sample fixed-width dataset. Nothing to install — run it and start editing.</p>
+            <p>Download a standalone 64-bit build, or inspect and fork the public source code.</p>
 
             <div class="btn-group">
                 <a href="https://github.com/Davidoneo/lsar-sandbox-web/releases/download/v1.0.3/LSAR_minimal.exe" class="btn btn-primary">
@@ -507,9 +476,9 @@
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M4 5h16a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z"/></svg>
                     Linux (64-bit)
                 </a>
-                <a href="bike_example.txt" download class="btn btn-outline">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    Sample Dataset (.txt)
+                <a href="https://github.com/Davidoneo/minimal_lsar" class="btn btn-outline">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l-3 3 3 3m8-6 3 3-3 3m-5-8-2 10"/></svg>
+                    Source Code
                 </a>
             </div>
 
@@ -521,20 +490,7 @@
                 <span><a href="https://github.com/Davidoneo/lsar-sandbox-web/releases" style="color:var(--primary);text-decoration:none;font-weight:600;">Release notes &amp; history</a></span>
             </div>
 
-            <div class="security-notice">
-                <h4>
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                    Bypassing Windows Execution Restrictions
-                </h4>
-                <p>As an independently distributed tool without a commercial EV certificate, Windows SmartScreen may flag the executable. To run the app:</p>
-                <ul>
-                    <li><strong>Browser (Edge / Chrome):</strong> Open the downloads list, click the three dots next to the file, choose <em>"Keep"</em>, then <em>"Keep anyway"</em>.</li>
-                    <li><strong>SmartScreen:</strong> When launching the <code>.exe</code>, click <em>"More info"</em> in the upper left, then <em>"Run anyway"</em>.</li>
-                    <li><strong>Windows 11:</strong> Right-click the <code>.exe</code>, select <em>Properties</em>, tick the <strong>"Unblock"</strong> box on the General tab, then Apply.</li>
-                </ul>
-            </div>
-
-            <p class="dl-note"><strong>On Linux:</strong> mark the download executable, then run it — <code>chmod +x LSAR_minimal_linux &amp;&amp; ./LSAR_minimal_linux</code>. Requires glibc 2.14+ (any current 64-bit distribution).</p>
+            <p class="dl-note">If a prebuilt download is unavailable or blocked, use the public source code to inspect, build, or fork the project.</p>
         </div>
 
         <div class="mission-box">
