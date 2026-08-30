@@ -185,6 +185,36 @@
         .download-panel h2 { margin: 0 0 0.4rem 0; font-size: 1.55rem; color: var(--text-main); letter-spacing: -0.01em; }
         .download-panel > p { color: var(--text-muted); margin: 0 auto 2rem auto; max-width: 460px; }
 
+        .quick-try {
+            display: flex;
+            justify-content: center;
+            padding: 0.25rem 0 2.25rem;
+        }
+        .quick-try .btn {
+            min-width: 240px;
+            justify-content: center;
+            padding: 1rem 2.2rem;
+            font-size: 1.08rem;
+        }
+        .download-separator {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 0 0 1.75rem;
+            color: var(--text-faint);
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+        .download-separator::before,
+        .download-separator::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
         .btn-group {
             display: flex;
             justify-content: center;
@@ -228,19 +258,6 @@
             flex-wrap: wrap;
         }
         .dl-meta .dot { color: var(--border-strong); }
-        .dl-note {
-            margin: 1.1rem auto 0 auto;
-            max-width: 560px;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            background: var(--bg-subtle);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 0.7rem 1rem;
-        }
-        .dl-note strong { color: var(--text-main); }
-        .dl-note code { font-size: 0.82em; }
-
         /* ---------- MISSION ---------- */
         .mission-box {
             background: var(--bg-surface);
@@ -260,7 +277,7 @@
         /* ---------- FEATURES ---------- */
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
             gap: 1.5rem;
         }
         .feature-card {
@@ -306,16 +323,19 @@
             background: var(--bg-subtle);
             border-bottom: 1px solid var(--border);
         }
-        .shot-bar .dots { display: flex; gap: 0.35rem; }
+        .shot-bar .dots { display: flex; flex: 0 0 auto; gap: 0.35rem; }
         .shot-bar .dots i { width: 11px; height: 11px; border-radius: 50%; display: block; }
         .shot-bar .dots i:nth-child(1) { background: #F87171; }
         .shot-bar .dots i:nth-child(2) { background: #FBBF24; }
         .shot-bar .dots i:nth-child(3) { background: #34D399; }
         .shot-bar span {
+            min-width: 0;
             font-size: 0.78rem;
             color: var(--text-faint);
             font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
             margin-left: 0.4rem;
+            line-height: 1.35;
+            overflow-wrap: break-word;
         }
         .shot-img {
             display: block;
@@ -328,13 +348,13 @@
             padding: 1rem 1.2rem;
             border-top: 1px solid var(--border);
         }
-        .shot-caption h4 { margin: 0 0 0.2rem 0; font-size: 1rem; color: var(--text-main); }
-        .shot-caption p { margin: 0; font-size: 0.875rem; color: var(--text-muted); }
+        .shot-caption h4 { margin: 0 0 0.2rem 0; font-size: 1rem; color: var(--text-main); overflow-wrap: break-word; }
+        .shot-caption p { margin: 0; font-size: 0.875rem; color: var(--text-muted); overflow-wrap: break-word; }
 
         .showcase-featured { margin-bottom: 1.75rem; }
         .showcase-duo {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
             gap: 1.75rem;
             margin-bottom: 1.75rem;
         }
@@ -435,6 +455,8 @@
             .hero-sub { font-size: 1.05rem; }
             .container { padding: 0 1.25rem; }
             .download-panel { padding: 2rem 1.4rem; }
+            .quick-try { padding-bottom: 1.75rem; }
+            .quick-try .btn { width: min(100%, 280px); }
             .btn-group { flex-direction: column; }
             .btn { width: 100%; justify-content: center; }
             .author-box { flex-direction: column; align-items: center; text-align: center; }
@@ -453,10 +475,8 @@
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"/></svg>
                     MIL-STD-1388-2B
                 </span>
-                <span class="chip">Embedded SQLite</span>
+                <span class="chip">Local SQLite</span>
                 <span class="chip">103-table schema</span>
-                <span class="chip">Windows &amp; Linux &middot; No install</span>
-                <span class="chip">MIT License</span>
             </div>
         </div>
     </header>
@@ -464,14 +484,19 @@
     <div class="container pull-up">
 
         <div class="download-panel">
-            <h2>Try, Download, or View the Source</h2>
-            <p>Open a working browser copy, choose a standalone 64-bit build, or inspect the public repository.</p>
-
-            <div class="btn-group">
+            <div class="quick-try">
                 <a href="demo/" class="btn btn-primary">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V7a2 2 0 012-2zm2 3h12M8 12h3m-3 3h6"/></svg>
-                    Try in Browser
+                    Quick Try
                 </a>
+            </div>
+
+            <div class="download-separator"><span>Desktop builds and source</span></div>
+
+            <h2>Download or View the Source</h2>
+            <p>Choose a standalone 64-bit build, or inspect and fork the public repository.</p>
+
+            <div class="btn-group">
                 <a href="https://github.com/Davidoneo/lsar-sandbox-web/releases/download/v1.0.3/LSAR_minimal.exe" class="btn btn-outline">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                     Windows (.exe)
@@ -493,8 +518,6 @@
                 <span class="dot">&bull;</span>
                 <span><a href="https://github.com/Davidoneo/lsar-sandbox-web/releases" style="color:var(--primary);text-decoration:none;font-weight:600;">Release notes &amp; history</a></span>
             </div>
-
-            <p class="dl-note"><strong>Browser demo:</strong> the example database is copied into your browser, where you can edit it and export files without uploading data. You can also download the resulting SQLite database. If a prebuilt download is unavailable or blocked, use the public source code.</p>
         </div>
 
         <div class="mission-box">
