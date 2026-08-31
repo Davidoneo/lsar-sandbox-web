@@ -12,7 +12,8 @@ browser security model requires an explicit download when the user wants a norma
 `.db` file; a web page cannot silently replace an arbitrary local file.
 
 The grid supports drag/Shift selection of cell ranges, rows, and columns; TSV
-copy/paste; insert-or-overwrite paste; Delete, arrow navigation, and undo/redo.
+copy/paste; insert-or-overwrite paste; a visible Add Row action that also works
+for empty tables; Delete, arrow navigation, and undo/redo.
 Single-clicking a cell selects its value for replacement, while double-click or
 F2 enters text-editing mode. Save validation is atomic and lists every invalid
 row in one persistent dialog, with the affected rows highlighted in orange.

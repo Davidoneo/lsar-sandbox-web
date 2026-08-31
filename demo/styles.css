@@ -450,6 +450,7 @@ a {
   cursor: pointer;
 }
 
+.add-row-button,
 .save-button,
 .primary-button,
 .secondary-button,
@@ -462,11 +463,14 @@ a {
   cursor: pointer;
 }
 
+.add-row-button { background: var(--blue-dark); }
+.add-row-button:hover { background: #075985; }
+.add-row-button:disabled,
+.save-button:disabled { opacity: 0.45; cursor: default; }
 .save-button,
 .primary-button { background: var(--green); }
 .save-button:hover,
 .primary-button:hover { background: var(--green-dark); }
-.save-button:disabled { opacity: 0.45; cursor: default; }
 .secondary-button { background: #4b5563; }
 .secondary-button:hover { background: #374151; }
 .danger-button { background: var(--danger); }
@@ -820,7 +824,7 @@ a {
   .workspace { grid-template-columns: 230px minmax(0, 1fr); }
   .table-toolbar {
     display: grid;
-    grid-template-columns: minmax(150px, 1fr) 155px auto auto auto auto;
+    grid-template-columns: minmax(150px, 1fr) 155px auto auto auto auto auto;
     gap: 7px;
   }
   .search-box { width: 155px; }
@@ -829,10 +833,10 @@ a {
 
 @media (max-width: 900px) {
   .table-toolbar {
-    grid-template-columns: minmax(145px, 1fr) auto auto auto auto;
+    grid-template-columns: minmax(145px, 1fr) auto auto auto auto auto;
     grid-template-areas:
-      "title title title title title"
-      "search relaxed help audit save";
+      "title title title title title title"
+      "search relaxed help audit add save";
     row-gap: 8px;
   }
   .table-toolbar h1 { grid-area: title; }
@@ -840,6 +844,7 @@ a {
   .relaxed-control { grid-area: relaxed; }
   #relaxed-info { grid-area: help; }
   .audit-control { grid-area: audit; }
+  #add-row { grid-area: add; }
   #save-changes { grid-area: save; }
 }
 
@@ -875,11 +880,12 @@ a {
     grid-template-columns: minmax(0, 1fr) auto auto auto;
     grid-template-areas:
       "title title title title"
-      "search search save save"
+      "search search add save"
       "relaxed help audit audit";
   }
   .table-toolbar h1 { min-width: 0; }
   .search-box { min-width: 135px; }
+  .add-row-button,
   .save-button { justify-self: end; }
   #column-status { display: none; }
   .status-bar { gap: 8px; }

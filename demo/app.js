@@ -30,7 +30,7 @@ const DEMO_USER = "browser-demo";
 const elements = Object.fromEntries([
   "loading-screen", "loading-message", "app", "table-tree", "active-db-name",
   "table-title", "table-search", "relaxed-mode", "relaxed-info", "show-audit",
-  "save-changes", "relation-banner", "relation-description", "clear-relation",
+  "add-row", "save-changes", "relation-banner", "relation-description", "clear-relation",
   "grid-wrap", "row-status", "column-status", "grid-zoom", "zoom-label",
   "context-menu", "modal-backdrop", "modal", "modal-title", "modal-body",
   "modal-actions", "modal-close", "toast", "database-file", "flat-file",
@@ -332,6 +332,7 @@ async function selectTable(table, filter = null) {
   elements["active-db-name"].textContent = dbName;
   elements["relation-banner"].hidden = !filter;
   elements["relation-description"].textContent = filter ? filter.description : "";
+  elements["add-row"].disabled = false;
   setDirty(false);
   renderTableTree();
   renderGrid();
@@ -1461,6 +1462,7 @@ function bindEvents() {
   });
   elements["table-search"].addEventListener("input", renderGrid);
   elements["show-audit"].addEventListener("change", renderGrid);
+  elements["add-row"].addEventListener("click", () => insertRow(1));
   elements["save-changes"].addEventListener("click", saveChanges);
   elements["relaxed-info"].addEventListener("click", showRelaxedInfo);
   elements["clear-relation"].addEventListener("click", () => selectTable(currentTable));
