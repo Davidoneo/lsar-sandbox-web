@@ -6,7 +6,7 @@
   <meta name="description" content="Interactive browser demo of Minimal LSAR Sandbox using a private local SQLite database.">
   <title>Minimal LSAR Sandbox — Browser Demo</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231e293b'/%3E%3Cellipse cx='32' cy='18' rx='20' ry='8' fill='%2338bdf8'/%3E%3Cpath d='M12 18v14c0 4 9 8 20 8s20-4 20-8V18M12 32v14c0 4 9 8 20 8s20-4 20-8V32' fill='none' stroke='%230284c7' stroke-width='6'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=20260831-1">
+  <link rel="stylesheet" href="styles.css?v=20260831-2">
 </head>
 <body>
   <div id="loading-screen" class="loading-screen" role="status" aria-live="polite">
@@ -120,10 +120,16 @@
     <button type="button" data-context="sort-asc">Sort A–Z</button>
     <button type="button" data-context="sort-desc">Sort Z–A</button>
     <hr>
+    <button type="button" data-context="copy">Copy Selected Cells</button>
+    <button type="button" data-context="paste-overwrite">Paste: Overwrite Cells</button>
+    <button type="button" data-context="paste-insert">Paste: Insert Copied Rows</button>
+    <button type="button" data-context="undo">Undo</button>
+    <button type="button" data-context="redo">Redo</button>
+    <hr>
     <button type="button" data-context="insert-above">Insert Blank Row Above</button>
     <button type="button" data-context="insert-below">Insert Blank Row Below</button>
-    <button type="button" data-context="clear-cell">Clear Selected Cell</button>
-    <button type="button" data-context="delete-row">Delete Selected Row</button>
+    <button type="button" data-context="clear-cell">Clear Selected Cells</button>
+    <button type="button" data-context="delete-row">Delete Selected Rows</button>
     <hr>
     <button type="button" data-context="go-parent">Go to Parent Record</button>
     <button type="button" data-context="show-children">Show Child Records</button>
@@ -146,6 +152,6 @@
   <input id="flat-file" type="file" accept=".txt,text/plain" hidden>
 
   <script src="vendor/sql-wasm.js"></script>
-  <script type="module" src="app.js?v=20260831-1"></script>
+  <script type="module" src="app.js?v=20260831-2"></script>
 </body>
 </html>

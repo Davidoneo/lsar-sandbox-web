@@ -11,6 +11,12 @@ tree, database upload/download, and the same fixed-width import/export rules. Th
 browser security model requires an explicit download when the user wants a normal
 `.db` file; a web page cannot silently replace an arbitrary local file.
 
+The grid supports drag/Shift selection of cell ranges, rows, and columns; TSV
+copy/paste; insert-or-overwrite paste; Delete, arrow navigation, and undo/redo.
+Single-clicking a cell selects its value for replacement, while double-click or
+F2 enters text-editing mode. Save validation is atomic and lists every invalid
+row in one persistent dialog, with the affected rows highlighted in orange.
+
 `vendor/sql-wasm.js` and `vendor/sql-wasm.wasm` are from sql.js 1.14.1. Its MIT
 license is included as `vendor/LICENSE-sql.js`.
 

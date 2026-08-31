@@ -525,6 +525,7 @@ a {
   border-spacing: 0;
   border-collapse: separate;
   font-size: calc(12px * var(--grid-scale));
+  user-select: none;
 }
 
 .data-grid th,
@@ -569,10 +570,15 @@ a {
 .data-grid td.required-column,
 .data-grid th.required-column { background: #e2e8f0; }
 
-.data-grid tr.selected-row td { background: #dbeafe; }
-.data-grid tr.selected-row td.required-column { background: #bfdbfe; }
-.data-grid tr.invalid-row td { background: var(--invalid); }
 .data-grid tr.new-row td { background: #fef9c3; }
+.data-grid td.grid-selected { background: #bfdbfe; }
+.data-grid td.grid-active { box-shadow: inset 0 0 0 2px #2563eb; }
+.data-grid .grid-heading-selected { background: #93c5fd; color: #1f2937; }
+.data-grid tr.invalid-row td { background: var(--invalid); }
+.data-grid tr.invalid-row td.grid-selected {
+  background: var(--invalid);
+  box-shadow: inset 0 0 0 2px #2563eb;
+}
 
 .cell-input {
   width: 100%;
@@ -583,6 +589,7 @@ a {
   outline: 0;
   background: transparent;
   color: #111827;
+  user-select: text;
 }
 
 .cell-input:focus {
@@ -590,6 +597,8 @@ a {
   background: #eff6ff;
   box-shadow: inset 0 0 0 1px #2563eb;
 }
+
+.data-grid tr.invalid-row .cell-input:focus { background: #ffedd5; }
 
 .status-bar {
   grid-area: status;
@@ -640,6 +649,8 @@ a {
   position: fixed;
   z-index: 300;
   min-width: 220px;
+  max-height: calc(100vh - 8px);
+  overflow-y: auto;
   padding: 5px;
   border: 1px solid #9ca3af;
   border-radius: 4px;
@@ -659,6 +670,8 @@ a {
 }
 
 .context-menu button:hover { background: #dbeafe; }
+.context-menu button:disabled { opacity: 0.42; cursor: default; }
+.context-menu button:disabled:hover { background: transparent; }
 
 .modal-backdrop {
   position: fixed;
@@ -716,6 +729,17 @@ a {
 .modal-body p:first-child { margin-top: 0; }
 .modal-body p:last-child { margin-bottom: 0; }
 .modal-body code { padding: 2px 4px; border-radius: 3px; background: #e5e7eb; }
+
+.save-error-details ol {
+  margin: 14px 0 0;
+  padding-left: 42px;
+}
+
+.save-error-details li {
+  margin: 5px 0;
+  padding-left: 4px;
+  color: #7c2d12;
+}
 
 .modal-actions {
   display: flex;
@@ -862,4 +886,6 @@ a {
   .zoom-control { margin-left: auto; }
   .zoom-control input { width: 64px; }
   .zoom-control span { width: 58px; }
+  .modal-actions { flex-wrap: wrap; }
+  .modal-actions button { flex: 1 1 150px; }
 }

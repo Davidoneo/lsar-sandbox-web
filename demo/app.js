@@ -11,14 +11,16 @@ import {
   generateFlatLines,
   isAuditColumn,
   isNumericType,
+  parseClipboardText,
   parseFlatRecord,
   quoteIdentifier,
   rowKey,
+  rowsToTsv,
   rowsEqual,
   tablePrefix,
   timestampNow,
   valuesEquivalent,
-} from "./logic.mjs";
+} from "./logic.mjs?v=20260831-2";
 
 const STORAGE_DB = "minimal-lsar-browser-demo";
 const STORAGE_STORE = "databases";
@@ -48,7 +50,14 @@ let rows = [];
 let originalRows = [];
 let selectedRow = -1;
 let selectedColumn = -1;
+let gridSelection = null;
+let gridSelectionActive = false;
+let draggingSelection = false;
+let editingCell = false;
+let undoStack = [];
+let redoStack = [];
 let invalidRows = new Set();
+let invalidMessages = new Map();
 let dirty = false;
 let relationFilter = null;
 let sortState = null;
@@ -109,14 +118,19 @@ function updateStatus(filteredCount = null) {
     return;
   }
   const shown = filteredCount == null ? rows.length : filteredCount;
-  const total = relationFilter ? rows.length : (rowCounts.get(currentTable) ?? rows.length);
+  const total = relationFilter || dirty ? rows.length : (rowCounts.get(currentTable) ?? rows.length);
   let text = `Rows: ${shown.toLocaleString()}${shown !== total ? ` of ${total.toLocaleString()}` : ""}`;
   if (total > MAX_GRID_ROWS) text += ` · first ${MAX_GRID_ROWS.toLocaleString()} loaded`;
   if (dirty) text += " · unsaved changes";
   elements["row-status"].textContent = text;
   elements["row-status"].classList.toggle("dirty", dirty);
   const visible = columns.filter((column) => elements["show-audit"].checked || !isAuditColumn(column.name));
-  elements["column-status"].textContent = `${visible.length} columns${relationFilter ? " · relationship filter active" : ""}`;
+  const selected = selectedGridCoordinates();
+  const selectedCount = selected.rowIndices.length * selected.columnIndices.length;
+  const selectionText = selectedCount > 1
+    ? ` · ${selectedCount.toLocaleString()} cells selected`
+    : selectedCount === 1 ? ` · ${columns[selected.columnIndices[0]]?.name || "cell"} selected` : "";
+  elements["column-status"].textContent = `${visible.length} columns${selectionText}${relationFilter ? " · relationship filter active" : ""}`;
 }
 
 function openStorage() {
@@ -304,8 +318,13 @@ async function selectTable(table, filter = null) {
   rows = records.map((record) => columns.map((column) => record[column.name] == null ? "" : String(record[column.name])));
   originalRows = cloneRows(rows);
   invalidRows.clear();
+  invalidMessages.clear();
   selectedRow = -1;
   selectedColumn = -1;
+  gridSelection = null;
+  gridSelectionActive = false;
+  undoStack = [];
+  redoStack = [];
   sortState = null;
   elements["table-search"].value = "";
   elements["table-search"].disabled = false;
@@ -330,10 +349,184 @@ function filteredRowEntries() {
   );
 }
 
+function orderedSpan(order, start, end) {
+  if (!order.length) return [];
+  const startIndex = order.indexOf(start);
+  const endIndex = order.indexOf(end);
+  if (startIndex < 0 || endIndex < 0) return [];
+  const low = Math.min(startIndex, endIndex);
+  const high = Math.max(startIndex, endIndex);
+  return order.slice(low, high + 1);
+}
+
+function selectedGridCoordinates() {
+  if (!gridSelection) return { rowIndices: [], columnIndices: [] };
+  const visibleRows = filteredRowEntries().map(({ index }) => index);
+  const visibleColumns = visibleColumnEntries().map(({ index }) => index);
+  if (gridSelection.mode === "rows") {
+    return {
+      rowIndices: orderedSpan(visibleRows, gridSelection.anchorRow, gridSelection.focusRow),
+      columnIndices: visibleColumns,
+    };
+  }
+  if (gridSelection.mode === "columns") {
+    return {
+      rowIndices: visibleRows,
+      columnIndices: orderedSpan(visibleColumns, gridSelection.anchorColumn, gridSelection.focusColumn),
+    };
+  }
+  return {
+    rowIndices: orderedSpan(visibleRows, gridSelection.anchorRow, gridSelection.focusRow),
+    columnIndices: orderedSpan(visibleColumns, gridSelection.anchorColumn, gridSelection.focusColumn),
+  };
+}
+
+function selectionContains(rowIndex, columnIndex) {
+  const { rowIndices, columnIndices } = selectedGridCoordinates();
+  if (rowIndex >= 0 && !rowIndices.includes(rowIndex)) return false;
+  if (columnIndex >= 0 && !columnIndices.includes(columnIndex)) return false;
+  return rowIndex >= 0 || columnIndex >= 0;
+}
+
+function applySelectionClasses() {
+  const table = elements["grid-wrap"].querySelector(".data-grid");
+  if (!table) return;
+  table.querySelectorAll(".grid-selected, .grid-active, .grid-heading-selected").forEach((element) => {
+    element.classList.remove("grid-selected", "grid-active", "grid-heading-selected");
+  });
+  const { rowIndices, columnIndices } = selectedGridCoordinates();
+  const rowSet = new Set(rowIndices);
+  const columnSet = new Set(columnIndices);
+  table.querySelectorAll("tbody td[data-row-index][data-column-index]").forEach((cell) => {
+    const rowIndex = Number(cell.dataset.rowIndex);
+    const columnIndex = Number(cell.dataset.columnIndex);
+    cell.classList.toggle("grid-selected", rowSet.has(rowIndex) && columnSet.has(columnIndex));
+    cell.classList.toggle("grid-active", rowIndex === selectedRow && columnIndex === selectedColumn);
+  });
+  if (gridSelection?.mode === "rows") {
+    table.querySelectorAll("tbody tr").forEach((record) => {
+      record.querySelector(".row-index")?.classList.toggle("grid-heading-selected", rowSet.has(Number(record.dataset.rowIndex)));
+    });
+  }
+  if (gridSelection?.mode === "columns") {
+    table.querySelectorAll("thead th[data-column-index]").forEach((heading) => {
+      heading.classList.toggle("grid-heading-selected", columnSet.has(Number(heading.dataset.columnIndex)));
+    });
+  }
+}
+
+function setGridSelection(rowIndex, columnIndex, mode = "cells", extend = false) {
+  const canExtend = extend && gridSelection?.mode === mode;
+  if (canExtend) {
+    if (rowIndex >= 0) gridSelection.focusRow = rowIndex;
+    if (columnIndex >= 0) gridSelection.focusColumn = columnIndex;
+  } else {
+    gridSelection = {
+      mode,
+      anchorRow: rowIndex,
+      focusRow: rowIndex,
+      anchorColumn: columnIndex,
+      focusColumn: columnIndex,
+    };
+  }
+  if (rowIndex >= 0) selectedRow = rowIndex;
+  if (columnIndex >= 0) selectedColumn = columnIndex;
+  gridSelectionActive = true;
+  applySelectionClasses();
+  updateStatus(filteredRowEntries().length);
+}
+
+function selectAllGrid() {
+  const visibleRows = filteredRowEntries().map(({ index }) => index);
+  const visibleColumns = visibleColumnEntries().map(({ index }) => index);
+  if (!visibleRows.length || !visibleColumns.length) return;
+  gridSelection = {
+    mode: "cells",
+    anchorRow: visibleRows[0],
+    focusRow: visibleRows.at(-1),
+    anchorColumn: visibleColumns[0],
+    focusColumn: visibleColumns.at(-1),
+  };
+  selectedRow = visibleRows[0];
+  selectedColumn = visibleColumns[0];
+  gridSelectionActive = true;
+  applySelectionClasses();
+  updateStatus(visibleRows.length);
+}
+
+function focusGridCell(rowIndex, columnIndex) {
+  const input = elements["grid-wrap"].querySelector(`.cell-input[data-row-index="${rowIndex}"][data-column-index="${columnIndex}"]`);
+  if (!input) return;
+  input.focus({ preventScroll: true });
+  input.scrollIntoView({ block: "nearest", inline: "nearest" });
+  const length = input.value.length;
+  input.setSelectionRange(length, length);
+}
+
+function moveGridSelection(rowDelta, columnDelta, extend = false) {
+  const visibleRows = filteredRowEntries().map(({ index }) => index);
+  const visibleColumns = visibleColumnEntries().map(({ index }) => index);
+  if (!visibleRows.length || !visibleColumns.length) return;
+  const currentRow = gridSelection?.focusRow >= 0 ? gridSelection.focusRow : visibleRows[0];
+  const currentColumn = gridSelection?.focusColumn >= 0 ? gridSelection.focusColumn : visibleColumns[0];
+  const rowPosition = Math.max(0, Math.min(visibleRows.length - 1, visibleRows.indexOf(currentRow) + rowDelta));
+  const columnPosition = Math.max(0, Math.min(visibleColumns.length - 1, visibleColumns.indexOf(currentColumn) + columnDelta));
+  const rowIndex = visibleRows[rowPosition];
+  const columnIndex = visibleColumns[columnPosition];
+  setGridSelection(rowIndex, columnIndex, "cells", extend);
+  focusGridCell(rowIndex, columnIndex);
+}
+
+function gridRowsEqual(left, right) {
+  return left.length === right.length && left.every((row, index) => rowsEqual(row, right[index]));
+}
+
+function recordUndo() {
+  undoStack.push(cloneRows(rows));
+  if (undoStack.length > 50) undoStack.shift();
+  redoStack = [];
+}
+
+function restoreGridSnapshot(snapshot, targetStack) {
+  if (!snapshot) return;
+  targetStack.push(cloneRows(rows));
+  rows = cloneRows(snapshot);
+  invalidRows.clear();
+  invalidMessages.clear();
+  selectedRow = Math.min(Math.max(selectedRow, 0), rows.length - 1);
+  setDirty(!gridRowsEqual(rows, originalRows));
+  renderGrid();
+}
+
+function undoGrid() {
+  restoreGridSnapshot(undoStack.pop(), redoStack);
+}
+
+function redoGrid() {
+  restoreGridSnapshot(redoStack.pop(), undoStack);
+}
+
+function originalGridKeys() {
+  const primaryKeys = metadata.get(currentTable)?.primaryKeys || [];
+  if (!primaryKeys.length) return null;
+  const headers = columns.map((column) => column.name);
+  return {
+    headers,
+    primaryKeys,
+    keys: new Set(originalRows.map((original) => rowKey(original, headers, primaryKeys))),
+  };
+}
+
+function rowIsNew(row, originals) {
+  if (!originals) return false;
+  return !originals.keys.has(rowKey(row, originals.headers, originals.primaryKeys));
+}
+
 function renderGrid() {
   if (!currentTable) return;
   const shownColumns = visibleColumnEntries();
   const shownRows = filteredRowEntries();
+  const originalKeys = originalGridKeys();
   const table = document.createElement("table");
   table.className = "data-grid";
   const head = document.createElement("thead");
@@ -341,6 +534,12 @@ function renderGrid() {
   const corner = document.createElement("th");
   corner.className = "row-index";
   corner.textContent = "#";
+  corner.title = "Select all visible cells";
+  corner.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    selectAllGrid();
+  });
   headingRow.append(corner);
   for (const { column, index } of shownColumns) {
     const heading = document.createElement("th");
@@ -348,7 +547,13 @@ function renderGrid() {
     heading.classList.toggle("required-column", column.required);
     heading.textContent = column.name;
     heading.title = `${column.name} — ${column.type || "untyped"}${column.primaryOrder ? " — primary key" : ""}`;
-    heading.addEventListener("click", () => sortRows(index, sortState?.column === index && sortState.direction === "asc" ? "desc" : "asc"));
+    heading.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0) return;
+      event.preventDefault();
+      const firstRow = shownRows[0]?.index ?? -1;
+      setGridSelection(firstRow, index, "columns", event.shiftKey);
+    });
+    heading.addEventListener("dblclick", () => sortRows(index, sortState?.column === index && sortState.direction === "asc" ? "desc" : "asc"));
     heading.addEventListener("contextmenu", (event) => showContextMenu(event, -1, index));
     headingRow.append(heading);
   }
@@ -359,17 +564,26 @@ function renderGrid() {
   for (const { row, index: rowIndex } of shownRows) {
     const tr = document.createElement("tr");
     tr.dataset.rowIndex = String(rowIndex);
-    tr.classList.toggle("selected-row", rowIndex === selectedRow);
+    tr.classList.toggle("new-row", rowIsNew(row, originalKeys));
     tr.classList.toggle("invalid-row", invalidRows.has(rowIndex));
-    tr.classList.toggle("new-row", rowIndex >= originalRows.length);
     const rowHeading = document.createElement("td");
     rowHeading.className = "row-index";
     rowHeading.textContent = String(rowIndex + 1);
-    rowHeading.addEventListener("click", () => selectCell(rowIndex, -1));
+    rowHeading.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0) return;
+      event.preventDefault();
+      setGridSelection(rowIndex, shownColumns[0]?.index ?? -1, "rows", event.shiftKey);
+      draggingSelection = true;
+    });
+    rowHeading.addEventListener("pointerenter", (event) => {
+      if (draggingSelection && (event.buttons & 1)) setGridSelection(rowIndex, shownColumns[0]?.index ?? -1, "rows", true);
+    });
     rowHeading.addEventListener("contextmenu", (event) => showContextMenu(event, rowIndex, -1));
     tr.append(rowHeading);
     for (const { column, index: columnIndex } of shownColumns) {
       const td = document.createElement("td");
+      td.dataset.rowIndex = String(rowIndex);
+      td.dataset.columnIndex = String(columnIndex);
       td.classList.toggle("required-column", column.required);
       const input = document.createElement("input");
       input.className = "cell-input";
@@ -378,11 +592,39 @@ function renderGrid() {
       input.dataset.rowIndex = String(rowIndex);
       input.dataset.columnIndex = String(columnIndex);
       input.setAttribute("aria-label", `${column.name}, row ${rowIndex + 1}`);
-      input.addEventListener("focus", () => selectCell(rowIndex, columnIndex, false));
+      td.addEventListener("pointerdown", (event) => {
+        if (event.button !== 0) return;
+        editingCell = event.detail > 1;
+        setGridSelection(rowIndex, columnIndex, "cells", event.shiftKey);
+        draggingSelection = true;
+      });
+      td.addEventListener("pointerenter", (event) => {
+        if (draggingSelection && (event.buttons & 1)) setGridSelection(rowIndex, columnIndex, "cells", true);
+      });
+      input.addEventListener("focus", () => {
+        if (!selectionContains(rowIndex, columnIndex)) setGridSelection(rowIndex, columnIndex);
+      });
+      input.addEventListener("pointerup", (event) => {
+        if (!editingCell) {
+          event.preventDefault();
+          input.select();
+        }
+      });
+      input.addEventListener("dblclick", () => { editingCell = true; });
+      input.addEventListener("beforeinput", () => {
+        if (input.dataset.undoRecorded !== "true") {
+          recordUndo();
+          input.dataset.undoRecorded = "true";
+        }
+        editingCell = true;
+      });
       input.addEventListener("input", () => {
         rows[rowIndex][columnIndex] = input.value;
-        invalidRows.delete(rowIndex);
         setDirty(true);
+      });
+      input.addEventListener("blur", () => {
+        delete input.dataset.undoRecorded;
+        editingCell = false;
       });
       input.addEventListener("contextmenu", (event) => showContextMenu(event, rowIndex, columnIndex));
       td.append(input);
@@ -392,13 +634,8 @@ function renderGrid() {
   }
   table.append(body);
   elements["grid-wrap"].replaceChildren(table);
+  applySelectionClasses();
   updateStatus(shownRows.length);
-}
-
-function selectCell(rowIndex, columnIndex, rerender = true) {
-  selectedRow = rowIndex;
-  selectedColumn = columnIndex;
-  if (rerender) renderGrid();
 }
 
 function sortRows(columnIndex, direction) {
@@ -411,31 +648,186 @@ function sortRows(columnIndex, direction) {
   });
   sortState = { column: columnIndex, direction };
   selectedRow = -1;
+  selectedColumn = columnIndex;
+  gridSelection = null;
+  invalidRows.clear();
+  invalidMessages.clear();
   renderGrid();
 }
 
 function insertRow(offset) {
+  recordUndo();
   const blank = columns.map(() => "");
   const position = selectedRow < 0 ? rows.length : Math.max(0, selectedRow + offset);
   rows.splice(position, 0, blank);
-  selectedRow = position;
+  invalidRows.clear();
+  invalidMessages.clear();
   setDirty(true);
   renderGrid();
+  setGridSelection(position, Math.max(0, selectedColumn), "rows");
 }
 
-function deleteSelectedRow() {
+function deleteSelectedRows() {
   if (selectedRow < 0 || selectedRow >= rows.length) return toast("Select a row first.", true);
-  rows.splice(selectedRow, 1);
-  selectedRow = Math.min(selectedRow, rows.length - 1);
+  const selected = gridSelection?.mode === "rows" ? selectedGridCoordinates().rowIndices : [selectedRow];
+  recordUndo();
+  [...selected].sort((left, right) => right - left).forEach((rowIndex) => rows.splice(rowIndex, 1));
+  invalidRows.clear();
+  invalidMessages.clear();
+  selectedRow = Math.min(Math.min(...selected), rows.length - 1);
+  setDirty(true);
+  renderGrid();
+  if (selectedRow >= 0) setGridSelection(selectedRow, Math.max(0, selectedColumn), "rows");
+}
+
+function clearSelectedCells() {
+  const { rowIndices, columnIndices } = selectedGridCoordinates();
+  if (!rowIndices.length || !columnIndices.length) return toast("Select one or more cells first.", true);
+  recordUndo();
+  rowIndices.forEach((rowIndex) => columnIndices.forEach((columnIndex) => { rows[rowIndex][columnIndex] = ""; }));
   setDirty(true);
   renderGrid();
 }
 
-function clearSelectedCell() {
-  if (selectedRow < 0 || selectedColumn < 0) return toast("Select a cell first.", true);
-  rows[selectedRow][selectedColumn] = "";
+function selectedGridText() {
+  const { rowIndices, columnIndices } = selectedGridCoordinates();
+  return rowsToTsv(rows, rowIndices, columnIndices);
+}
+
+async function copyGridSelection() {
+  const text = selectedGridText();
+  if (!text && !selectedGridCoordinates().rowIndices.length) return toast("Select one or more cells first.", true);
+  try {
+    await navigator.clipboard.writeText(text);
+    const { rowIndices, columnIndices } = selectedGridCoordinates();
+    toast(`Copied ${rowIndices.length * columnIndices.length} cell${rowIndices.length * columnIndices.length === 1 ? "" : "s"}.`);
+  } catch {
+    toast("Clipboard access was blocked by the browser. Use Ctrl+C instead.", true);
+  }
+}
+
+function applyPasteMatrix(matrix, mode) {
+  if (!matrix.length || !matrix.some((record) => record.length)) return;
+  const visibleColumns = visibleColumnEntries().map(({ index }) => index);
+  const startColumnPosition = Math.max(0, visibleColumns.indexOf(selectedColumn));
+  const targetColumns = visibleColumns.slice(startColumnPosition, startColumnPosition + Math.max(...matrix.map((record) => record.length)));
+  if (!targetColumns.length) return toast("No visible destination column is available.", true);
+  recordUndo();
+  const targetRows = [];
+  if (mode === "insert") {
+    const insertion = selectedRow >= 0 ? selectedRow : rows.length;
+    const blanks = matrix.map(() => columns.map(() => ""));
+    rows.splice(insertion, 0, ...blanks);
+    matrix.forEach((record, rowOffset) => {
+      const rowIndex = insertion + rowOffset;
+      targetRows.push(rowIndex);
+      record.forEach((value, columnOffset) => {
+        const columnIndex = targetColumns[columnOffset];
+        if (columnIndex != null) rows[rowIndex][columnIndex] = value;
+      });
+    });
+  } else {
+    const startRow = selectedRow >= 0 ? selectedRow : 0;
+    matrix.forEach((record, rowOffset) => {
+      let rowIndex = startRow + rowOffset;
+      if (rowIndex >= rows.length) {
+        rowIndex = rows.length;
+        rows.push(columns.map(() => ""));
+      }
+      targetRows.push(rowIndex);
+      record.forEach((value, columnOffset) => {
+        const columnIndex = targetColumns[columnOffset];
+        if (columnIndex != null) rows[rowIndex][columnIndex] = value;
+      });
+    });
+  }
+  invalidRows.clear();
+  invalidMessages.clear();
   setDirty(true);
   renderGrid();
+  gridSelection = {
+    mode: "cells",
+    anchorRow: targetRows[0],
+    focusRow: targetRows.at(-1),
+    anchorColumn: targetColumns[0],
+    focusColumn: targetColumns.at(-1),
+  };
+  selectedRow = targetRows[0];
+  selectedColumn = targetColumns[0];
+  applySelectionClasses();
+  updateStatus(filteredRowEntries().length);
+}
+
+function showPasteChoice(matrix) {
+  const description = document.createElement("p");
+  description.textContent = `${matrix.length} clipboard rows detected. Choose how to place them in the grid.`;
+  openModal("Paste Options", description, [
+    modalButton("Cancel", "secondary-button", closeModal),
+    modalButton("Overwrite Existing Cells", "secondary-button", () => { closeModal(); applyPasteMatrix(matrix, "overwrite"); }),
+    modalButton("Insert as New Rows", "primary-button", () => { closeModal(); applyPasteMatrix(matrix, "insert"); }),
+  ]);
+}
+
+function handleGridPaste(text, forcedMode = null) {
+  const matrix = parseClipboardText(text);
+  if (!forcedMode && matrix.length > 1) showPasteChoice(matrix);
+  else applyPasteMatrix(matrix, forcedMode || "overwrite");
+}
+
+async function pasteFromClipboard(mode) {
+  try {
+    handleGridPaste(await navigator.clipboard.readText(), mode);
+  } catch {
+    toast("Clipboard access was blocked by the browser. Focus a cell and use Ctrl+V instead.", true);
+  }
+}
+
+function addInvalidMessage(messages, rowIndex, message) {
+  if (!messages.has(rowIndex)) messages.set(rowIndex, new Set());
+  messages.get(rowIndex).add(message);
+}
+
+function friendlyDatabaseError(error) {
+  const message = String(error?.message || error || "Database validation failed.");
+  if (message.includes("FOREIGN KEY constraint failed")) return "broken foreign-key reference";
+  if (message.includes("UNIQUE constraint failed")) return "duplicate value violates a unique key";
+  if (message.includes("NOT NULL constraint failed")) return "a required value is missing";
+  if (message.includes("CHECK constraint failed")) return "a database format rule was not satisfied";
+  return message;
+}
+
+function showSaveErrors(messages) {
+  invalidMessages = new Map(messages);
+  invalidRows = new Set(messages.keys());
+  if (elements["table-search"].value) elements["table-search"].value = "";
+  renderGrid();
+  const wrapper = document.createElement("div");
+  wrapper.className = "save-error-details";
+  const intro = document.createElement("p");
+  intro.innerHTML = `<strong>${messages.size} ${messages.size === 1 ? "row contains" : "rows contain"} fatal errors.</strong> Nothing was saved. The affected rows are highlighted in orange.`;
+  const list = document.createElement("ol");
+  for (const [rowIndex, rowMessages] of [...messages].sort(([left], [right]) => left - right).slice(0, 30)) {
+    const item = document.createElement("li");
+    item.value = rowIndex + 1;
+    item.textContent = [...rowMessages].join("; ");
+    list.append(item);
+  }
+  if (messages.size > 30) {
+    const remainder = document.createElement("p");
+    remainder.textContent = `The first 30 rows are listed; all ${messages.size} affected rows are highlighted in the grid.`;
+    wrapper.append(intro, list, remainder);
+  } else {
+    wrapper.append(intro, list);
+  }
+  openModal("Save Aborted", wrapper, [modalButton("Return to Grid", "primary-button", closeModal)]);
+}
+
+function showSaveEngineError(message) {
+  showErrorDialog("Save Aborted", message, "Nothing was saved.", "Return to Grid");
+}
+
+function showErrorDialog(title, message, intro = "The operation was not completed.", buttonText = "Close") {
+  openModal(title, `<p><strong>${escapeHtml(intro)}</strong></p><p>${escapeHtml(message)}</p>`, [modalButton(buttonText, "primary-button", closeModal)]);
 }
 
 function prepareRowsForSave() {
@@ -444,41 +836,35 @@ function prepareRowsForSave() {
   const headers = columns.map((column) => column.name);
   const keys = new Set();
   const prepared = [];
-  invalidRows.clear();
+  const errors = new Map();
   rows.forEach((row, rowIndex) => {
     const normalized = row.map((value) => String(value ?? "").trim());
     if (!normalized.some(Boolean)) return;
     for (const key of meta.primaryKeys) {
       const index = columns.findIndex((column) => column.name === key);
-      if (normalized[index] === "") {
-        invalidRows.add(rowIndex);
-        throw new Error(`Row ${rowIndex + 1}: primary key ${key} is required.`);
-      }
+      if (normalized[index] === "") addInvalidMessage(errors, rowIndex, `primary key ${key} is required`);
     }
     for (const [columnIndex, column] of columns.entries()) {
       const value = normalized[columnIndex];
-      if (column.required && !isAuditColumn(column.name) && value === "") {
-        invalidRows.add(rowIndex);
-        throw new Error(`Row ${rowIndex + 1}: ${column.name} is required.`);
+      if (column.required && !column.primaryOrder && !isAuditColumn(column.name) && value === "") {
+        addInvalidMessage(errors, rowIndex, `${column.name} is required`);
       }
       if (!elements["relaxed-mode"].checked) {
         const match = column.type.match(/\(\s*(\d+)/);
         const width = match ? flatFieldWidth(column.type) : null;
         if (width != null && value.length > width) {
-          invalidRows.add(rowIndex);
-          throw new Error(`Row ${rowIndex + 1}: ${column.name} exceeds ${width} characters. Enable Relaxed Mode only for non-standard data.`);
+          addInvalidMessage(errors, rowIndex, `${column.name} exceeds ${width} characters`);
         }
       }
     }
     const key = rowKey(normalized, headers, meta.primaryKeys);
     if (keys.has(key)) {
-      invalidRows.add(rowIndex);
-      throw new Error(`Row ${rowIndex + 1}: duplicate primary key.`);
+      addInvalidMessage(errors, rowIndex, "duplicate primary key");
     }
     keys.add(key);
-    prepared.push({ rowIndex, row: normalized, key });
+    if (!errors.has(rowIndex)) prepared.push({ rowIndex, row: normalized, key });
   });
-  return { prepared, headers, meta };
+  return { prepared, headers, meta, errors };
 }
 
 function applyAuditValues(row, original, changed) {
@@ -507,10 +893,11 @@ async function saveChanges() {
   try {
     saveData = prepareRowsForSave();
   } catch (error) {
-    renderGrid();
-    return toast(error.message, true);
+    return showSaveEngineError(error.message);
   }
-  const { prepared, headers, meta } = saveData;
+  const { prepared, headers, meta, errors } = saveData;
+  invalidRows.clear();
+  invalidMessages = new Map(errors);
   const normalizedOriginal = originalRows.map((row) => row.map((value) => String(value ?? "").trim()));
   const originalMap = new Map(normalizedOriginal.map((row) => [rowKey(row, headers, meta.primaryKeys), row]));
   const seenKeys = new Set(prepared.map(({ key }) => key));
@@ -546,9 +933,14 @@ async function saveChanges() {
           updated += 1;
         }
       } catch (error) {
-        invalidRows.add(rowIndex);
-        throw new Error(`Row ${rowIndex + 1}: ${error.message}`);
+        addInvalidMessage(invalidMessages, rowIndex, friendlyDatabaseError(error));
       }
+    }
+    if (invalidMessages.size) {
+      db.run("ROLLBACK");
+      db.run("PRAGMA foreign_keys = ON");
+      showSaveErrors(invalidMessages);
+      return;
     }
     for (const [key, original] of originalMap) {
       if (seenKeys.has(key)) continue;
@@ -574,7 +966,7 @@ async function saveChanges() {
     try { db.run("ROLLBACK"); } catch { /* transaction already closed */ }
     db.run("PRAGMA foreign_keys = ON");
     renderGrid();
-    toast(`Nothing was saved. ${error.message}`, true);
+    showSaveEngineError(error.message);
   }
 }
 
@@ -754,6 +1146,7 @@ function showExportDialog() {
 function showInfo() {
   openModal("Browser Demo Information", `
     <p>This is the real Minimal LSAR data model running locally in your browser through SQLite. It uses the same <strong>103-table schema</strong>, example dataset, validation rules, relationships, LCN hierarchy, and fixed-width import/export logic as the desktop project.</p>
+    <p><strong>Grid controls:</strong> click and drag, or Shift-click, to select a range. Ctrl+C/Cmd+C copies tab-separated cells; Ctrl+V/Cmd+V pastes them and asks whether multiple rows should be inserted or overwritten. Use arrows to move, Delete to clear, Ctrl+Z/Cmd+Z to undo, and double-click or F2 to edit within a cell.</p>
     <p>Your copy is private to this browser profile. Nothing is uploaded to lsarstudio.com, and another visitor receives a separate database. <strong>Save Changes</strong> writes to browser storage; <strong>Download Database</strong> creates a normal SQLite file that you can retain or open with the desktop application.</p>
     <p>A web page cannot silently overwrite an arbitrary file on your computer. This is why replacing the local <code>.db</code> file is an explicit download. Clearing site data or using a private window removes that browser's saved copy.</p>
   `, [modalButton("Close", "primary-button", closeModal)]);
@@ -876,12 +1269,24 @@ function relationChoices(kind) {
 
 function showContextMenu(event, rowIndex, columnIndex) {
   event.preventDefault();
-  selectedRow = rowIndex;
-  selectedColumn = columnIndex;
-  elements["context-menu"].style.left = `${Math.min(event.clientX, innerWidth - 240)}px`;
-  elements["context-menu"].style.top = `${Math.min(event.clientY, innerHeight - 300)}px`;
+  const matchingSelection = rowIndex < 0
+    ? gridSelection?.mode === "columns" && selectionContains(rowIndex, columnIndex)
+    : columnIndex < 0
+      ? gridSelection?.mode === "rows" && selectionContains(rowIndex, columnIndex)
+      : selectionContains(rowIndex, columnIndex);
+  if (!matchingSelection) {
+    const mode = rowIndex < 0 ? "columns" : columnIndex < 0 ? "rows" : "cells";
+    setGridSelection(rowIndex, columnIndex, mode);
+  } else {
+    if (rowIndex >= 0) selectedRow = rowIndex;
+    if (columnIndex >= 0) selectedColumn = columnIndex;
+  }
+  elements["context-menu"].querySelector('[data-context="undo"]').disabled = !undoStack.length;
+  elements["context-menu"].querySelector('[data-context="redo"]').disabled = !redoStack.length;
   elements["context-menu"].hidden = false;
-  renderGrid();
+  const bounds = elements["context-menu"].getBoundingClientRect();
+  elements["context-menu"].style.left = `${Math.max(4, Math.min(event.clientX, innerWidth - bounds.width - 4))}px`;
+  elements["context-menu"].style.top = `${Math.max(4, Math.min(event.clientY, innerHeight - bounds.height - 4))}px`;
 }
 
 function closeMenus() {
@@ -982,12 +1387,14 @@ function bindEvents() {
     });
   });
   document.querySelectorAll("[data-action]").forEach((button) => button.addEventListener("click", () => {
-    handleAction(button.dataset.action).catch((error) => toast(error.message, true));
+    handleAction(button.dataset.action).catch((error) => showErrorDialog("Operation Failed", error.message));
   }));
   document.addEventListener("click", (event) => {
     if (!event.target.closest(".menu-root") && !event.target.closest("#context-menu")) closeMenus();
     if (!event.target.closest("#sidebar") && !event.target.closest("#mobile-tables")) setMobileSidebar(false);
+    if (!event.target.closest("#grid-wrap") && !event.target.closest("#context-menu") && !event.target.closest("#modal")) gridSelectionActive = false;
   });
+  document.addEventListener("pointerup", () => { draggingSelection = false; });
   elements["mobile-tables"].addEventListener("click", (event) => {
     event.stopPropagation();
     setMobileSidebar(!elements.sidebar.classList.contains("mobile-open"));
@@ -996,8 +1403,58 @@ function bindEvents() {
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
       event.preventDefault();
       saveChanges();
+      return;
     }
-    if (event.key === "Escape") { closeMenus(); closeModal(); setMobileSidebar(false); }
+    if (!gridSelectionActive || !currentTable) {
+      if (event.key === "Escape") { closeMenus(); closeModal(); setMobileSidebar(false); }
+      return;
+    }
+    const modifier = event.ctrlKey || event.metaKey;
+    if (modifier && event.key.toLowerCase() === "a" && editingCell && document.activeElement?.classList.contains("cell-input")) {
+      return;
+    } else if (modifier && event.key.toLowerCase() === "a") {
+      event.preventDefault();
+      selectAllGrid();
+    } else if (modifier && event.key.toLowerCase() === "z") {
+      event.preventDefault();
+      if (event.shiftKey) redoGrid(); else undoGrid();
+    } else if (modifier && event.key.toLowerCase() === "y") {
+      event.preventDefault();
+      redoGrid();
+    } else if (event.key === "F2") {
+      event.preventDefault();
+      editingCell = true;
+      const active = document.activeElement;
+      if (active?.classList.contains("cell-input")) active.select();
+    } else if (!editingCell && ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) {
+      event.preventDefault();
+      const moves = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] };
+      moveGridSelection(...moves[event.key], event.shiftKey);
+    } else if (event.key === "Enter") {
+      event.preventDefault();
+      editingCell = false;
+      moveGridSelection(event.shiftKey ? -1 : 1, 0, false);
+    } else if (!editingCell && (event.key === "Delete" || event.key === "Backspace")) {
+      event.preventDefault();
+      clearSelectedCells();
+    } else if (event.key === "Escape") {
+      editingCell = false;
+      closeMenus();
+      closeModal();
+      setMobileSidebar(false);
+    }
+  });
+  document.addEventListener("copy", (event) => {
+    if (!gridSelectionActive || !gridSelection) return;
+    const active = document.activeElement;
+    if (editingCell && active?.classList.contains("cell-input") && active.selectionStart !== active.selectionEnd) return;
+    event.preventDefault();
+    event.clipboardData.setData("text/plain", selectedGridText());
+  });
+  document.addEventListener("paste", (event) => {
+    if (!gridSelectionActive || !gridSelection) return;
+    event.preventDefault();
+    handleGridPaste(event.clipboardData.getData("text/plain"));
   });
   window.addEventListener("beforeunload", (event) => {
     if (dirty) { event.preventDefault(); event.returnValue = ""; }
@@ -1016,19 +1473,25 @@ function bindEvents() {
   elements["modal-backdrop"].addEventListener("click", (event) => { if (event.target === elements["modal-backdrop"]) closeModal(); });
   elements["context-menu"].addEventListener("click", (event) => {
     const action = event.target.dataset.context;
+    if (!action) return;
     closeMenus();
     if (action === "sort-asc" && selectedColumn >= 0) sortRows(selectedColumn, "asc");
     if (action === "sort-desc" && selectedColumn >= 0) sortRows(selectedColumn, "desc");
+    if (action === "copy") copyGridSelection();
+    if (action === "paste-overwrite") pasteFromClipboard("overwrite");
+    if (action === "paste-insert") pasteFromClipboard("insert");
+    if (action === "undo") undoGrid();
+    if (action === "redo") redoGrid();
     if (action === "insert-above") insertRow(0);
     if (action === "insert-below") insertRow(1);
-    if (action === "clear-cell") clearSelectedCell();
-    if (action === "delete-row") deleteSelectedRow();
+    if (action === "clear-cell") clearSelectedCells();
+    if (action === "delete-row") deleteSelectedRows();
     if (action === "go-parent") relationChoices("parent");
     if (action === "show-children") relationChoices("children");
   });
   elements["database-file"].addEventListener("change", async () => {
     try { await loadDatabaseFile(elements["database-file"].files[0]); }
-    catch (error) { toast(error.message, true); }
+    catch (error) { showErrorDialog("Database Error", error.message); }
     elements["database-file"].value = "";
   });
   elements["flat-file"].addEventListener("change", async () => {
@@ -1041,7 +1504,7 @@ function bindEvents() {
       await selectTable(currentTable || tables[0]);
       toast(`Imported ${file.name}: ${counts.inserted} inserted, ${counts.updated} updated, ${counts.unchanged} unchanged, ${counts.skipped} skipped.`);
     } catch (error) {
-      toast(`Nothing was imported. ${error.message}`, true);
+      showErrorDialog("Import Error", error.message, "Nothing was imported.");
     } finally {
       elements["flat-file"].value = "";
     }
@@ -1078,6 +1541,8 @@ async function start() {
     window.__LSAR_DEMO__ = {
       summary: () => ({ tables: tables.length, dbName, currentTable, rows: rows.length, totalRows: [...rowCounts.values()].reduce((sum, count) => sum + count, 0), dirty }),
       cellValue: (rowIndex, columnIndex) => rows[rowIndex]?.[columnIndex],
+      selection: () => ({ ...gridSelection, ...selectedGridCoordinates() }),
+      invalidRows: () => [...invalidMessages].map(([rowIndex, messages]) => ({ rowIndex, messages: [...messages] })),
       foreignKeyViolations: () => query("PRAGMA foreign_key_check"),
       foreignKeysEnabled: () => Number(scalar("PRAGMA foreign_keys")) === 1,
       selectTable,

@@ -8,8 +8,10 @@ import {
   formatTableName,
   generateFlatLines,
   isNumericType,
+  parseClipboardText,
   parseFlatRecord,
   rowKey,
+  rowsToTsv,
   tablePrefix,
   timestampNow,
   valuesEquivalent,
@@ -45,6 +47,13 @@ test("numeric equivalence accepts SQLite normalization", () => {
   assert.equal(valuesEquivalent(50, "51", true), false);
   assert.equal(valuesEquivalent("50.0", "50", false), false);
   assert.equal(valuesEquivalent(null, "0", true), false);
+});
+
+test("clipboard parsing and TSV copy preserve spreadsheet shape", () => {
+  assert.deepEqual(parseClipboardText("A\tB\r\nC\tD\r\n"), [["A", "B"], ["C", "D"]]);
+  assert.deepEqual(parseClipboardText("single"), [["single"]]);
+  assert.deepEqual(parseClipboardText(""), [[""]]);
+  assert.equal(rowsToTsv([["A", "B", "C"], ["D", "E", "F"]], [0, 1], [0, 2]), "A\tC\nD\tF");
 });
 
 test("LCN hierarchy resolves explicit and longest-prefix parents", () => {

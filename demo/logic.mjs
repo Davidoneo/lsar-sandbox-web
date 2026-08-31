@@ -51,6 +51,20 @@ export function blankToNull(value) {
   return value === "" ? null : value;
 }
 
+export function parseClipboardText(text) {
+  const normalized = String(text ?? "").replaceAll("\r\n", "\n").replaceAll("\r", "\n");
+  const withoutFinalNewline = normalized.endsWith("\n") ? normalized.slice(0, -1) : normalized;
+  if (withoutFinalNewline === "") return [[""]];
+  return withoutFinalNewline.split("\n").map((line) => line.split("\t"));
+}
+
+export function rowsToTsv(sourceRows, rowIndices, columnIndices) {
+  return rowIndices.map((rowIndex) => columnIndices
+    .map((columnIndex) => String(sourceRows[rowIndex]?.[columnIndex] ?? ""))
+    .join("\t"))
+    .join("\n");
+}
+
 export function quoteIdentifier(identifier) {
   return `"${String(identifier).replaceAll('"', '""')}"`;
 }
