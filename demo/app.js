@@ -32,6 +32,7 @@ const elements = Object.fromEntries([
   "grid-wrap", "row-status", "column-status", "grid-zoom", "zoom-label",
   "context-menu", "modal-backdrop", "modal", "modal-title", "modal-body",
   "modal-actions", "modal-close", "toast", "database-file", "flat-file",
+  "mobile-tables", "sidebar",
 ].map((id) => [id, document.getElementById(id)]));
 
 let SQL;
@@ -155,8 +156,17 @@ async function storagePut(value) {
   }
 }
 
+function exportDatabaseBytes() {
+  const bytes = db.export();
+  // sql.js closes and reopens the connection while exporting, which resets
+  // connection-local PRAGMAs. The desktop app enables this on every connection.
+  db.run("PRAGMA foreign_keys = ON");
+  return bytes;
+}
+
 async function persistDatabase() {
-  await storagePut({ name: dbName, bytes: db.export(), savedAt: new Date().toISOString(), version: 1 });
+  const bytes = exportDatabaseBytes();
+  await storagePut({ name: dbName, bytes, savedAt: new Date().toISOString(), version: 1 });
 }
 
 async function fetchText(path) {
@@ -264,6 +274,7 @@ function renderTableTree() {
       button.addEventListener("click", async () => {
         if (!confirmDiscard()) return;
         await selectTable(item.table);
+        setMobileSidebar(false);
       });
       list.append(button);
     }
@@ -427,99 +438,126 @@ function clearSelectedCell() {
   renderGrid();
 }
 
-function validateRows() {
+function prepareRowsForSave() {
   const meta = metadata.get(currentTable);
   if (!meta.primaryKeys.length) throw new Error("This table has no primary key and cannot be edited safely.");
+  const headers = columns.map((column) => column.name);
   const keys = new Set();
+  const prepared = [];
   invalidRows.clear();
   rows.forEach((row, rowIndex) => {
+    const normalized = row.map((value) => String(value ?? "").trim());
+    if (!normalized.some(Boolean)) return;
     for (const key of meta.primaryKeys) {
       const index = columns.findIndex((column) => column.name === key);
-      if (String(row[index] ?? "").trim() === "") {
+      if (normalized[index] === "") {
         invalidRows.add(rowIndex);
         throw new Error(`Row ${rowIndex + 1}: primary key ${key} is required.`);
       }
     }
     for (const [columnIndex, column] of columns.entries()) {
-      const value = String(row[columnIndex] ?? "");
-      if (column.required && !isAuditColumn(column.name) && value.trim() === "") {
+      const value = normalized[columnIndex];
+      if (column.required && !isAuditColumn(column.name) && value === "") {
         invalidRows.add(rowIndex);
         throw new Error(`Row ${rowIndex + 1}: ${column.name} is required.`);
       }
       if (!elements["relaxed-mode"].checked) {
         const match = column.type.match(/\(\s*(\d+)/);
-        if (match && value.length > Number(match[1])) {
+        const width = match ? flatFieldWidth(column.type) : null;
+        if (width != null && value.length > width) {
           invalidRows.add(rowIndex);
-          throw new Error(`Row ${rowIndex + 1}: ${column.name} exceeds ${match[1]} characters. Enable Relaxed Mode only for non-standard data.`);
+          throw new Error(`Row ${rowIndex + 1}: ${column.name} exceeds ${width} characters. Enable Relaxed Mode only for non-standard data.`);
         }
       }
     }
-    const key = rowKey(row, columns.map((column) => column.name), meta.primaryKeys);
+    const key = rowKey(normalized, headers, meta.primaryKeys);
     if (keys.has(key)) {
       invalidRows.add(rowIndex);
       throw new Error(`Row ${rowIndex + 1}: duplicate primary key.`);
     }
     keys.add(key);
+    prepared.push({ rowIndex, row: normalized, key });
   });
+  return { prepared, headers, meta };
 }
 
-function applyAuditValues(row, isNew, changed) {
+function applyAuditValues(row, original, changed) {
   if (!changed) return;
   const now = timestampNow();
+  const isNew = !original;
+  const userEditedAudit = new Set();
+  if (original) {
+    columns.forEach((column, index) => {
+      if (isAuditColumn(column.name) && row[index] !== original[index]) userEditedAudit.add(column.name.toUpperCase());
+    });
+  }
   columns.forEach((column, index) => {
     const upper = column.name.toUpperCase();
-    if (isNew && AUDIT_CREATE.includes(upper)) row[index] = now;
-    if (isNew && AUDIT_USER_CREATE.includes(upper)) row[index] = DEMO_USER;
-    if (AUDIT_UPDATE.includes(upper)) row[index] = now;
-    if (AUDIT_USER_UPDATE.includes(upper)) row[index] = DEMO_USER;
+    if (!isAuditColumn(column.name) || userEditedAudit.has(upper)) return;
+    if (AUDIT_USER_CREATE.includes(upper)) row[index] = isNew || !row[index] ? DEMO_USER : original[index];
+    else if (AUDIT_USER_UPDATE.includes(upper)) row[index] = changed || isNew || !row[index] ? DEMO_USER : original[index];
+    else if (AUDIT_CREATE.includes(upper)) row[index] = isNew || !row[index] ? now : original[index];
+    else if (AUDIT_UPDATE.includes(upper)) row[index] = changed || isNew || !row[index] ? now : original[index];
   });
 }
 
 async function saveChanges() {
   if (!currentTable || !dirty) return;
+  let saveData;
   try {
-    validateRows();
+    saveData = prepareRowsForSave();
   } catch (error) {
     renderGrid();
     return toast(error.message, true);
   }
-  const meta = metadata.get(currentTable);
-  const headers = columns.map((column) => column.name);
-  const originalMap = new Map(originalRows.map((row) => [rowKey(row, headers, meta.primaryKeys), row]));
-  const currentMap = new Map(rows.map((row) => [rowKey(row, headers, meta.primaryKeys), row]));
+  const { prepared, headers, meta } = saveData;
+  const normalizedOriginal = originalRows.map((row) => row.map((value) => String(value ?? "").trim()));
+  const originalMap = new Map(normalizedOriginal.map((row) => [rowKey(row, headers, meta.primaryKeys), row]));
+  const seenKeys = new Set(prepared.map(({ key }) => key));
   const keyWhere = meta.primaryKeys.map((key) => `${quoteIdentifier(key)} IS ?`).join(" AND ");
   let inserted = 0;
   let updated = 0;
   let deleted = 0;
+  db.run("PRAGMA foreign_keys = ON");
   db.run("BEGIN");
   try {
-    for (const [key, original] of originalMap) {
-      if (currentMap.has(key)) continue;
-      const keyValues = meta.primaryKeys.map((name) => blankToNull(original[headers.indexOf(name)]));
-      db.run(`DELETE FROM ${quoteIdentifier(currentTable)} WHERE ${keyWhere}`, keyValues);
-      deleted += 1;
-    }
-    for (const [key, row] of currentMap) {
+    // Match the desktop order: inserts/updates first, removals afterwards.
+    for (const { key, row, rowIndex } of prepared) {
       const original = originalMap.get(key);
       const changed = !original || !rowsEqual(row, original);
       if (!changed) continue;
-      applyAuditValues(row, !original, true);
-      const values = row.map((value) => blankToNull(String(value ?? "").trim()));
-      if (!original) {
-        db.run(
-          `INSERT INTO ${quoteIdentifier(currentTable)} (${headers.map(quoteIdentifier).join(", ")}) VALUES (${headers.map(() => "?").join(", ")})`,
-          values,
-        );
-        inserted += 1;
-      } else {
-        const setColumns = headers.filter((name) => !meta.primaryKeys.includes(name));
-        const setValues = setColumns.map((name) => values[headers.indexOf(name)]);
-        const keyValues = meta.primaryKeys.map((name) => blankToNull(original[headers.indexOf(name)]));
-        db.run(
-          `UPDATE ${quoteIdentifier(currentTable)} SET ${setColumns.map((name) => `${quoteIdentifier(name)} = ?`).join(", ")} WHERE ${keyWhere}`,
-          [...setValues, ...keyValues],
-        );
-        updated += 1;
+      applyAuditValues(row, original, true);
+      const values = row.map(blankToNull);
+      try {
+        if (!original) {
+          db.run(
+            `INSERT INTO ${quoteIdentifier(currentTable)} (${headers.map(quoteIdentifier).join(", ")}) VALUES (${headers.map(() => "?").join(", ")})`,
+            values,
+          );
+          inserted += 1;
+        } else {
+          const setColumns = headers.filter((name) => !meta.primaryKeys.includes(name));
+          const setValues = setColumns.map((name) => values[headers.indexOf(name)]);
+          const keyValues = meta.primaryKeys.map((name) => blankToNull(original[headers.indexOf(name)]));
+          db.run(
+            `UPDATE ${quoteIdentifier(currentTable)} SET ${setColumns.map((name) => `${quoteIdentifier(name)} = ?`).join(", ")} WHERE ${keyWhere}`,
+            [...setValues, ...keyValues],
+          );
+          updated += 1;
+        }
+      } catch (error) {
+        invalidRows.add(rowIndex);
+        throw new Error(`Row ${rowIndex + 1}: ${error.message}`);
+      }
+    }
+    for (const [key, original] of originalMap) {
+      if (seenKeys.has(key)) continue;
+      const keyValues = meta.primaryKeys.map((name) => blankToNull(original[headers.indexOf(name)]));
+      try {
+        db.run(`DELETE FROM ${quoteIdentifier(currentTable)} WHERE ${keyWhere}`, keyValues);
+        deleted += 1;
+      } catch {
+        throw new Error("Cannot delete rows. They are referenced as parent keys in another table (relational integrity violated).");
       }
     }
     const violations = query("PRAGMA foreign_key_check");
@@ -527,13 +565,15 @@ async function saveChanges() {
     db.run("COMMIT");
     await persistDatabase();
     rowCounts.set(currentTable, Number(scalar(`SELECT COUNT(*) FROM ${quoteIdentifier(currentTable)}`)));
-    originalRows = cloneRows(rows);
-    setDirty(false);
-    renderTableTree();
-    renderGrid();
-    toast(`Saved locally: ${inserted} inserted, ${updated} updated, ${deleted} deleted.`);
+    const table = currentTable;
+    const filter = relationFilter;
+    await selectTable(table, filter);
+    if (inserted || updated || deleted) toast(`Saved locally: ${inserted} inserted, ${updated} updated, ${deleted} deleted.`);
+    else toast("No changes detected.");
   } catch (error) {
     try { db.run("ROLLBACK"); } catch { /* transaction already closed */ }
+    db.run("PRAGMA foreign_keys = ON");
+    renderGrid();
     toast(`Nothing was saved. ${error.message}`, true);
   }
 }
@@ -551,51 +591,58 @@ function importFlatText(text, showResult = true) {
   db.run("PRAGMA foreign_keys = OFF");
   db.run("BEGIN");
   try {
-    for (const line of String(text).split(/\r?\n/)) {
+    for (const [lineIndex, line] of String(text).split(/\r?\n/).entries()) {
       if (!line.trim()) continue;
       const parsed = parseFlatRecord(line, cache);
-      if (parsed.skipped || parsed.values.some((_, index) => parsed.schema.primaryKeys.includes(parsed.schema.columns[index].name) && !parsed.values[index])) {
+      if (parsed.skipped) {
         counts.skipped += 1;
         continue;
       }
-      const spec = parsed.schema;
-      const current = existingRecord(spec, parsed.values);
-      const changed = current && spec.columns.some((column, index) =>
-        !valuesEquivalent(current[column.name], parsed.values[index], isNumericType(column.type)),
-      );
-      const now = timestampNow();
-      if (!current) {
-        const names = spec.columns.map((column) => column.name);
-        const values = parsed.values.map(blankToNull);
-        for (const audit of spec.auditColumns) {
-          names.push(audit.name);
-          const upper = audit.name.toUpperCase();
-          values.push(AUDIT_CREATE.includes(upper) || AUDIT_UPDATE.includes(upper) ? now : DEMO_USER);
-        }
-        db.run(
-          `INSERT INTO ${quoteIdentifier(spec.table)} (${names.map(quoteIdentifier).join(", ")}) VALUES (${names.map(() => "?").join(", ")})`,
-          values,
+      try {
+        const spec = parsed.schema;
+        const current = existingRecord(spec, parsed.values);
+        const changed = current && spec.columns.some((column, index) =>
+          !valuesEquivalent(current[column.name], parsed.values[index], isNumericType(column.type)),
         );
-        counts.inserted += 1;
-      } else if (changed) {
-        const names = spec.columns.map((column) => column.name);
-        const values = parsed.values.map(blankToNull);
-        for (const audit of spec.auditColumns) {
-          const upper = audit.name.toUpperCase();
-          if (AUDIT_UPDATE.includes(upper) || AUDIT_USER_UPDATE.includes(upper)) {
+        const now = timestampNow();
+        if (!current) {
+          const names = spec.columns.map((column) => column.name);
+          const values = parsed.values.map(blankToNull);
+          for (const audit of spec.auditColumns) {
             names.push(audit.name);
-            values.push(AUDIT_UPDATE.includes(upper) ? now : DEMO_USER);
+            const upper = audit.name.toUpperCase();
+            values.push(AUDIT_CREATE.includes(upper) || AUDIT_UPDATE.includes(upper) ? now : DEMO_USER);
           }
+          db.run(
+            `INSERT INTO ${quoteIdentifier(spec.table)} (${names.map(quoteIdentifier).join(", ")}) VALUES (${names.map(() => "?").join(", ")})`,
+            values,
+          );
+          counts.inserted += 1;
+        } else if (changed) {
+          const dataColumns = spec.columns.filter((column) => !spec.primaryKeys.includes(column.name));
+          const names = dataColumns.map((column) => column.name);
+          const values = dataColumns.map((column) => blankToNull(parsed.values[spec.columns.indexOf(column)]));
+          for (const audit of spec.auditColumns) {
+            const upper = audit.name.toUpperCase();
+            if (AUDIT_UPDATE.includes(upper) || AUDIT_USER_UPDATE.includes(upper)) {
+              names.push(audit.name);
+              values.push(AUDIT_UPDATE.includes(upper) ? now : DEMO_USER);
+            }
+          }
+          const where = spec.primaryKeys.map((key) => `${quoteIdentifier(key)} IS ?`).join(" AND ");
+          const keyValues = spec.primaryKeys.map((key) => parsed.values[spec.columns.findIndex((column) => column.name === key)]);
+          if (names.length) {
+            db.run(
+              `UPDATE ${quoteIdentifier(spec.table)} SET ${names.map((name) => `${quoteIdentifier(name)} = ?`).join(", ")} WHERE ${where}`,
+              [...values, ...keyValues],
+            );
+          }
+          counts.updated += 1;
+        } else {
+          counts.unchanged += 1;
         }
-        const where = spec.primaryKeys.map((key) => `${quoteIdentifier(key)} IS ?`).join(" AND ");
-        const keyValues = spec.primaryKeys.map((key) => blankToNull(parsed.values[spec.columns.findIndex((column) => column.name === key)]));
-        db.run(
-          `UPDATE ${quoteIdentifier(spec.table)} SET ${names.map((name) => `${quoteIdentifier(name)} = ?`).join(", ")} WHERE ${where}`,
-          [...values, ...keyValues],
-        );
-        counts.updated += 1;
-      } else {
-        counts.unchanged += 1;
+      } catch (error) {
+        throw new Error(`Line ${lineIndex + 1} (${parsed.prefix} record): ${error.message}`);
       }
     }
     const violations = query("PRAGMA foreign_key_check");
@@ -625,7 +672,7 @@ function downloadBytes(bytes, filename, type) {
 
 function downloadDatabase() {
   const filename = dbName.replace(/\.(db|sqlite|sqlite3)$/i, "") + "-browser.db";
-  downloadBytes(db.export(), filename, "application/vnd.sqlite3");
+  downloadBytes(exportDatabaseBytes(), filename, "application/vnd.sqlite3");
   toast("Database downloaded. It can be opened by the desktop application.");
 }
 
@@ -843,6 +890,11 @@ function closeMenus() {
   elements["context-menu"].hidden = true;
 }
 
+function setMobileSidebar(open) {
+  elements.sidebar.classList.toggle("mobile-open", open);
+  elements["mobile-tables"].setAttribute("aria-expanded", String(open));
+}
+
 async function replaceWithExample() {
   if (!confirmDiscard() || !window.confirm("Replace this browser's database with a fresh copy of the included bicycle example?")) return;
   db.close();
@@ -934,13 +986,18 @@ function bindEvents() {
   }));
   document.addEventListener("click", (event) => {
     if (!event.target.closest(".menu-root") && !event.target.closest("#context-menu")) closeMenus();
+    if (!event.target.closest("#sidebar") && !event.target.closest("#mobile-tables")) setMobileSidebar(false);
+  });
+  elements["mobile-tables"].addEventListener("click", (event) => {
+    event.stopPropagation();
+    setMobileSidebar(!elements.sidebar.classList.contains("mobile-open"));
   });
   document.addEventListener("keydown", (event) => {
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
       event.preventDefault();
       saveChanges();
     }
-    if (event.key === "Escape") { closeMenus(); closeModal(); }
+    if (event.key === "Escape") { closeMenus(); closeModal(); setMobileSidebar(false); }
   });
   window.addEventListener("beforeunload", (event) => {
     if (dirty) { event.preventDefault(); event.returnValue = ""; }
@@ -1022,6 +1079,7 @@ async function start() {
       summary: () => ({ tables: tables.length, dbName, currentTable, rows: rows.length, totalRows: [...rowCounts.values()].reduce((sum, count) => sum + count, 0), dirty }),
       cellValue: (rowIndex, columnIndex) => rows[rowIndex]?.[columnIndex],
       foreignKeyViolations: () => query("PRAGMA foreign_key_check"),
+      foreignKeysEnabled: () => Number(scalar("PRAGMA foreign_keys")) === 1,
       selectTable,
       exportTableLines: (names) => generateFlatLines(names.map((table) => {
         const layout = metadata.get(table).columns.filter((column) => !isAuditColumn(column.name)).map((column) => ({ name: column.name, width: flatFieldWidth(column.type) }));

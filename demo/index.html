@@ -52,11 +52,12 @@
           <a href="https://github.com/Davidoneo/minimal_lsar">Source Code…</a>
         </div>
       </div>
+      <button id="mobile-tables" class="mobile-tables-button" type="button" aria-expanded="false">Tables</button>
       <span class="local-data-label">Local browser data · not uploaded</span>
     </nav>
 
     <div class="workspace">
-      <aside class="sidebar">
+      <aside id="sidebar" class="sidebar">
         <div class="brand-block">
           <div class="database-logo compact" aria-hidden="true"><i></i><i></i><i></i></div>
         </div>
@@ -77,12 +78,12 @@
             <span aria-hidden="true">⌕</span>
             <input id="table-search" type="search" placeholder="Search table…" autocomplete="off" disabled>
           </label>
-          <label class="switch-control">
+          <label class="switch-control relaxed-control">
             <input id="relaxed-mode" type="checkbox">
             <span>Relaxed Mode</span>
           </label>
           <button id="relaxed-info" class="round-help" type="button" title="Relaxed Mode information">?</button>
-          <label class="switch-control">
+          <label class="switch-control audit-control">
             <input id="show-audit" type="checkbox">
             <span>Audit Cols</span>
           </label>
@@ -110,7 +111,7 @@
             <span id="zoom-label">Zoom 100%</span>
           </label>
         </div>
-        <footer>Browser demo · © 2026 Davide Lunardelli</footer>
+        <footer title="Illustrative browser demo — it may contain bugs not present in the desktop version">Illustrative browser demo — it may contain bugs not present in the desktop version · © 2026 Davide Lunardelli</footer>
       </main>
     </div>
   </div>
